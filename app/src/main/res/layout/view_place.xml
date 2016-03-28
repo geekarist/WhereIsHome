@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/text_commute_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="55"
+        tools:text="14 rue des Verts Manteaux du Québec, Paris"/>
+
+    <TextView
+        android:id="@+id/text_commute_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_weight="15"
+        android:textAlignment="center"
+        tools:text="42 min."/>
+
+    <TextView
+        android:id="@+id/text_commute_count"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_weight="15"
+        android:textAlignment="center"
+        tools:text="5 times"/>
+
+    <TextView
+        android:id="@+id/text_commute_weekly_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_weight="15"
+        android:textAlignment="center"
+        tools:text="210 min."/>
+</LinearLayout>
