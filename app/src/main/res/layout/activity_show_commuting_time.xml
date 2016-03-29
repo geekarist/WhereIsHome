@@ -38,8 +38,8 @@
         android:text="Add a place"
         />
 
-    <ListView
-        android:id="@+id/list_places"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_commutes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/button_add_place"
