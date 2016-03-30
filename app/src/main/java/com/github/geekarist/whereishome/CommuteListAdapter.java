@@ -11,17 +11,15 @@ import java.util.List;
 
 public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> {
     private final List<Commute> mCommuteList;
-    private final Context mContext;
 
-    public CommuteListAdapter(Context context) {
-        mContext = context;
+    public CommuteListAdapter() {
         mCommuteList = Arrays.asList(new Commute("156 boulevard Haussmann, Paris", 40), new Commute("5 rue Henri Barbusse, Villejuif", 30));
         notifyDataSetChanged();
     }
 
     @Override
     public CommuteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.view_place, parent);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_place, parent, false);
         return new CommuteViewHolder(itemView);
     }
 
