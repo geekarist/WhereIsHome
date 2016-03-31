@@ -1,6 +1,7 @@
 package com.github.geekarist.whereishome;
 
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,6 +15,9 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class ShowCommutingTimeActivity extends AppCompatActivity {
 
@@ -50,7 +54,12 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
                     Intent intent = new PlacePicker.IntentBuilder().build(ShowCommutingTimeActivity.this);
                     startActivityForResult(intent, PLACE_PICKER_REQUEST);
                 } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
+                    StringWriter msg = new StringWriter();
+                    PrintWriter msgPrint = new PrintWriter(msg);
+                    e.printStackTrace(msgPrint);
+                    new AlertDialog.Builder(ShowCommutingTimeActivity.this)
+                            .setTitle("Google Play Services Error")
+                            .setMessage(msg.toString()).create().show();
                 }
             }
         });
