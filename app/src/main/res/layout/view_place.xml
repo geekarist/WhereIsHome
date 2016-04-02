@@ -1,42 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:layout_margin="5dp"
+    tools:showIn="@layout/activity_show_commuting_time">
 
-    <TextView
-        android:id="@+id/text_commute_address"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="55"
-        tools:text="14 rue des Verts Manteaux du Québec, Paris"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/text_commute_time"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_weight="15"
-        android:textAlignment="center"
-        tools:text="42 min."/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_margin="5dp"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_commute_count"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_weight="15"
-        android:textAlignment="center"
-        tools:text="5 times"/>
+            <TextView
+                android:id="@+id/place_text_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="14 rue des Verts Manteaux du Québec, Paris"/>
 
-    <TextView
-        android:id="@+id/text_commute_weekly_time"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_weight="15"
-        android:textAlignment="center"
-        tools:text="210 min."/>
-</LinearLayout>
+            <TextView
+                android:id="@+id/place_text_commute_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="42 min."/>
+
+            <TextView
+                android:id="@+id/place_text_weekly_commute_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="5 times"/>
+
+            <TextView
+                android:id="@+id/place_text_weekly_commute_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="210 min."/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/place_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="5dp"
+            android:contentDescription="@string/place_image_content_desc"
+            android:src="#ffffc0"/>
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

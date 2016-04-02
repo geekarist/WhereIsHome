@@ -21,6 +21,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ShowCommutingTimeActivity extends AppCompatActivity {
@@ -36,6 +37,7 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_commuting_time);
+        ButterKnife.bind(this);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mCommuteListView.setLayoutManager(layoutManager);

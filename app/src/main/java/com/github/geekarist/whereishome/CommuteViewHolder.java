@@ -10,8 +10,8 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
 
     public CommuteViewHolder(View itemView) {
         super(itemView);
-        mTextAddress = (TextView) itemView.findViewById(R.id.text_commute_address);
-        mTextTime = (TextView) itemView.findViewById(R.id.text_commute_time);
+        mTextAddress = (TextView) itemView.findViewById(R.id.place_text_address);
+        mTextTime = (TextView) itemView.findViewById(R.id.place_text_commute_time);
     }
 
     public void bind(Commute commute) {
