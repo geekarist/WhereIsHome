@@ -5,6 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.android.gms.location.places.Place;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +35,14 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
     @Override
     public int getItemCount() {
         return mCommuteList.size();
+    }
+
+    public void addCommute(Place place) {
+        if (getItemCount() == 0) {
+            // Main place
+        } else {
+            // Other place
+        }
     }
 }
 

@@ -12,6 +12,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCkJRsIwrApuXWXo0rC36AujYywTv3Kjxw"/>
+        <meta-data android:name="DIRECTIONS_API_KEY" android:value="AIzaSyCxmdjwtmgAZJ39qwdJ075DprUwYpNFcjg" />
         <activity android:name=".ShowCommutingTimeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

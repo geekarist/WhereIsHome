@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -32,6 +30,7 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
     RecyclerView mCommuteListView;
 
     private GoogleApiClient mGoogleApiClient;
+    private CommuteListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +40,8 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mCommuteListView.setLayoutManager(layoutManager);
-        CommuteListAdapter adapter = new CommuteListAdapter();
-        mCommuteListView.setAdapter(adapter);
+        mAdapter = new CommuteListAdapter();
+        mCommuteListView.setAdapter(mAdapter);
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
@@ -72,7 +71,7 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
         if (requestCode == REQUEST_PLACE_PICKER) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this, data);
-                Toast.makeText(this, place.getAddress(), Toast.LENGTH_LONG).show();
+                mAdapter.addCommute(place);
             }
         }
     }
