@@ -9,16 +9,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.places.Place;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> {
-    private final List<Commute> mCommuteList;
-
-    public CommuteListAdapter() {
-        mCommuteList = Arrays.asList(new Commute("156 boulevard Haussmann, Paris", 40), new Commute("5 rue Henri Barbusse, Villejuif", 30));
-        notifyDataSetChanged();
-    }
+    private final List<Commute> mCommuteList = new ArrayList<>();
 
     @Override
     public CommuteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -39,10 +35,15 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
 
     public void addCommute(Place place) {
         if (getItemCount() == 0) {
-            // Main place
+            mCommuteList.add(new Commute(placeLabel(place), 0));
         } else {
-            // Other place
+            mCommuteList.add(new Commute(placeLabel(place), 42));
         }
+        notifyDataSetChanged();
+    }
+
+    private String placeLabel(Place place) {
+        return String.valueOf(place.getAddress() != null ? place.getAddress() : place.getLatLng());
     }
 }
 
