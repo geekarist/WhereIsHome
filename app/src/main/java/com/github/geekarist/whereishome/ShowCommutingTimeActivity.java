@@ -1,9 +1,9 @@
 package com.github.geekarist.whereishome;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,6 +14,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.gson.Gson;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -31,6 +32,7 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
 
     private GoogleApiClient mGoogleApiClient;
     private CommuteListAdapter mAdapter;
+    private CommuteListPersistence mPersistence;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,8 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
         mCommuteListView.setLayoutManager(layoutManager);
         mAdapter = new CommuteListAdapter();
         mCommuteListView.setAdapter(mAdapter);
+        mPersistence = new CommuteListPersistence(mAdapter, this, new Gson());
+        mAdapter.registerAdapterDataObserver(mPersistence);
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
@@ -80,5 +84,6 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mGoogleApiClient.disconnect();
+        mAdapter.unregisterAdapterDataObserver(mPersistence);
     }
 }

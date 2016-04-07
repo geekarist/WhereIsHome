@@ -12,6 +12,7 @@ import java.util.List;
 
 public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> {
     private final List<Commute> mCommuteList = new ArrayList<>();
+    private List<Commute> mItems;
 
     @Override
     public CommuteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -41,6 +42,14 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
 
     private String placeLabel(Place place) {
         return String.valueOf(place.getAddress() != null ? place.getAddress() : place.getLatLng());
+    }
+
+    public List<Commute> getItems() {
+        return mCommuteList;
+    }
+
+    public void addItems(List<Commute> items) {
+        mCommuteList.addAll(items);
     }
 }
 
