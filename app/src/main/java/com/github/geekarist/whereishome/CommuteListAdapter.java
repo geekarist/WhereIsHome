@@ -10,9 +10,15 @@ import com.google.android.gms.location.places.Place;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+
 public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> {
     private final List<Commute> mCommuteList = new ArrayList<>();
-    private List<Commute> mItems;
 
     @Override
     public CommuteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -34,10 +40,31 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
     public void addCommute(Place place) {
         if (getItemCount() == 0) {
             mCommuteList.add(new Commute(placeLabel(place), 0));
+            notifyDataSetChanged();
         } else {
-            mCommuteList.add(new Commute(placeLabel(place), 42));
+            findDistanceAndAddCommute(mCommuteList.get(0), place);
         }
-        notifyDataSetChanged();
+    }
+
+    private void findDistanceAndAddCommute(Place place1, final Place place2) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://maps.googleapis.com")
+                .build();
+
+        DistanceMatrixService service = retrofit.create(DistanceMatrixService.class);
+        service.getDistanceMatrix(
+                String.valueOf(place1.getAddress()), String.valueOf(place2.getAddress()),
+                "AIzaSyB1FGeq0g-kv2_pa7N9J-t601V9Nj9ibfw")
+                .enqueue(new Callback<DistanceMatrix>() {
+                    @Override
+                    public void onResponse(Call<DistanceMatrix> call, Response<DistanceMatrix> response) {
+                        mCommuteList.add(new Commute(placeLabel(place2), (int) response.body().rows.get(0).elements.get(0).duration.value));
+                    }
+
+                    @Override
+                    public void onFailure(Call<DistanceMatrix> call, Throwable t) {
+                    }
+                });
     }
 
     private String placeLabel(Place place) {
@@ -50,6 +77,35 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
 
     public void addItems(List<Commute> items) {
         mCommuteList.addAll(items);
+    }
+
+    interface DistanceMatrixService {
+        String json = "https://maps.googleapis.com/maps/api/distancematrix/json" +
+                "?origins=bd%20de%20brandebourg,%20ivry&destinations=156%20bd%20haussmann,%20Paris" +
+                "&mode=transit&language=fr-FR&key=AIzaSyB1FGeq0g-kv2_pa7N9J-t601V9Nj9ibfw";
+
+        @GET("/maps/api/distancematrix/json?origins={origin}&destinations={destination}&mode=transit&key={key}")
+        Call<DistanceMatrix> getDistanceMatrix(@Path("origin") String origin, @Path("destination") String destination, @Path("key") String key);
+    }
+
+    private static class DistanceMatrix {
+        List<String> destinationAddresses;
+        List<String> originAddresses;
+        List<DistanceMatrixRow> rows;
+    }
+
+    private static class DistanceMatrixRow {
+        List<DistanceMatrixElements> elements;
+    }
+
+    private static class DistanceMatrixElements {
+        DistanceMatrixElement distance;
+        DistanceMatrixElement duration;
+    }
+
+    private static class DistanceMatrixElement {
+        String text;
+        double value;
     }
 }
 
