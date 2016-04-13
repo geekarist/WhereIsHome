@@ -42,23 +42,23 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
             mCommuteList.add(new Commute(placeLabel(place), 0));
             notifyDataSetChanged();
         } else {
-            findDistanceAndAddCommute(mCommuteList.get(0), place);
+            findDistanceAndAddCommute(mCommuteList.get(0).address, place);
         }
     }
 
-    private void findDistanceAndAddCommute(Place place1, final Place place2) {
+    private void findDistanceAndAddCommute(String fromAddress, final Place toPlace) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://maps.googleapis.com")
                 .build();
 
         DistanceMatrixService service = retrofit.create(DistanceMatrixService.class);
         service.getDistanceMatrix(
-                String.valueOf(place1.getAddress()), String.valueOf(place2.getAddress()),
+                String.valueOf(fromAddress), String.valueOf(toPlace.getAddress()),
                 "AIzaSyB1FGeq0g-kv2_pa7N9J-t601V9Nj9ibfw")
                 .enqueue(new Callback<DistanceMatrix>() {
                     @Override
                     public void onResponse(Call<DistanceMatrix> call, Response<DistanceMatrix> response) {
-                        mCommuteList.add(new Commute(placeLabel(place2), (int) response.body().rows.get(0).elements.get(0).duration.value));
+                        mCommuteList.add(new Commute(placeLabel(toPlace), (int) response.body().rows.get(0).elements.get(0).duration.value));
                     }
 
                     @Override
