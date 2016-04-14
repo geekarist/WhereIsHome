@@ -50,7 +50,8 @@
             android:layout_alignParentEnd="true"
             android:layout_margin="5dp"
             android:contentDescription="@string/place_image_content_desc"
-            android:src="#ffffc0"/>
+            android:src="#ffffc0"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="24sp"
-        tools:text="You'll spend\n690 minutes\ncommuting"/>
+        android:text="@string/commuting_time_placeholder" />
 
     <Button
         android:id="@+id/button_add_place"
