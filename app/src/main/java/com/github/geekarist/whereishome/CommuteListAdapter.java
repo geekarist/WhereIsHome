@@ -88,22 +88,22 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
         Call<DistanceMatrix> getDistanceMatrix(@Path("origin") String origin, @Path("destination") String destination, @Path("key") String key);
     }
 
-    private static class DistanceMatrix {
+    public static class DistanceMatrix {
         List<String> destinationAddresses;
         List<String> originAddresses;
         List<DistanceMatrixRow> rows;
     }
 
-    private static class DistanceMatrixRow {
+    public static class DistanceMatrixRow {
         List<DistanceMatrixElements> elements;
     }
 
-    private static class DistanceMatrixElements {
+    public static class DistanceMatrixElements {
         DistanceMatrixElement distance;
         DistanceMatrixElement duration;
     }
 
-    private static class DistanceMatrixElement {
+    public static class DistanceMatrixElement {
         String text;
         double value;
     }
