@@ -10,12 +10,15 @@ import com.google.android.gms.location.places.Place;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> {
     private final List<Commute> mCommuteList = new ArrayList<>();
@@ -47,8 +50,14 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
     }
 
     private void findDistanceAndAddCommute(String fromAddress, final Place toPlace) {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://maps.googleapis.com")
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         DistanceMatrixService service = retrofit.create(DistanceMatrixService.class);
@@ -58,7 +67,8 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
                 .enqueue(new Callback<DistanceMatrix>() {
                     @Override
                     public void onResponse(Call<DistanceMatrix> call, Response<DistanceMatrix> response) {
-                        mCommuteList.add(new Commute(placeLabel(toPlace), (int) response.body().rows.get(0).elements.get(0).duration.value));
+                        int duration = (int) response.body().rows.get(0).elements.get(0).duration.value;
+                        mCommuteList.add(new Commute(placeLabel(toPlace), duration));
                     }
 
                     @Override
@@ -80,12 +90,8 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
     }
 
     interface DistanceMatrixService {
-        String json = "https://maps.googleapis.com/maps/api/distancematrix/json" +
-                "?origins=bd%20de%20brandebourg,%20ivry&destinations=156%20bd%20haussmann,%20Paris" +
-                "&mode=transit&language=fr-FR&key=AIzaSyB1FGeq0g-kv2_pa7N9J-t601V9Nj9ibfw";
-
-        @GET("/maps/api/distancematrix/json?origins={origin}&destinations={destination}&mode=transit&key={key}")
-        Call<DistanceMatrix> getDistanceMatrix(@Path("origin") String origin, @Path("destination") String destination, @Path("key") String key);
+        @GET("/maps/api/distancematrix/json?mode=transit")
+        Call<DistanceMatrix> getDistanceMatrix(@Query("origins") String origin, @Query("destinations") String destination, @Query("key") String key);
     }
 
     public static class DistanceMatrix {
