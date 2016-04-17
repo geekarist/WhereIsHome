@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.annimon.stream.Optional;
 import com.google.android.gms.location.places.Place;
 
 import java.util.ArrayList;
@@ -67,8 +68,15 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
                 .enqueue(new Callback<DistanceMatrix>() {
                     @Override
                     public void onResponse(Call<DistanceMatrix> call, Response<DistanceMatrix> response) {
-                        int duration = (int) response.body().rows.get(0).elements.get(0).duration.value;
-                        mCommuteList.add(new Commute(placeLabel(toPlace), duration));
+                        int duration = Optional.ofNullable(response)
+                                .map(Response::body).map(b -> b.rows).map(rows -> rows.get(0))
+                                .map(r -> r.elements).map(elements -> elements.get(0))
+                                .map(e -> e.duration).map(d -> (int) Math.round(d.value))
+                                .orElse(0);
+                        String label = placeLabel(toPlace);
+                        Commute commute = new Commute(label, duration);
+                        mCommuteList.add(commute);
+                        notifyDataSetChanged();
                     }
 
                     @Override
