@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.annimon.stream.Optional;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
 import com.google.gson.Gson;
@@ -52,14 +53,27 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
 
     @OnClick(R.id.button_add_place)
     public void onClickButtonAddPlace(View v) {
-        Intent intent = PickCommuteActivity.newIntent(this);
+        Intent intent = PickCommuteActivity.newIntent(this, getHomeAddress(), isHomeAddressToPick());
         startActivityForResult(intent, REQUEST_PLACE);
+    }
+
+    private boolean isHomeAddressToPick() {
+        return mAdapter.getItemCount() == 0;
+    }
+
+    private String getHomeAddress() {
+        return Optional.ofNullable(mAdapter.getItems())
+                .map(l -> l.get(0))
+                .map(item -> item.address)
+                .orElse(null);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Commute commute = data.getParcelableExtra(PickCommuteActivity.DATA_RESULT_COMMUTE);
-        mAdapter.addItems(Collections.singletonList(commute));
+        if (requestCode == REQUEST_PLACE) {
+            Commute commute = data.getParcelableExtra(PickCommuteActivity.DATA_RESULT_COMMUTE);
+            mAdapter.addItems(Collections.singletonList(commute));
+        }
     }
 
     @Override

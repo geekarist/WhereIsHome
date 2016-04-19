@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="com.github.geekarist.whereishome"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.github.geekarist.whereishome">
 
     <application
         android:allowBackup="true"
@@ -11,15 +10,19 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCkJRsIwrApuXWXo0rC36AujYywTv3Kjxw"/>
-        <meta-data android:name="DIRECTIONS_API_KEY" android:value="AIzaSyCxmdjwtmgAZJ39qwdJ075DprUwYpNFcjg" />
+            android:value="AIzaSyCkJRsIwrApuXWXo0rC36AujYywTv3Kjxw" />
+        <meta-data
+            android:name="DIRECTIONS_API_KEY"
+            android:value="AIzaSyCxmdjwtmgAZJ39qwdJ075DprUwYpNFcjg" />
+
         <activity android:name=".ShowCommutingTimeActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".PickCommuteActivity" />
     </application>
 
 </manifest>

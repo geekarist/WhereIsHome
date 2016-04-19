@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import com.annimon.stream.Optional;
+import com.annimon.stream.function.Consumer;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -30,14 +31,24 @@ import retrofit2.http.Query;
 public class PickCommuteActivity extends AppCompatActivity {
     private static final int REQUEST_PLACE_PICKER = 1;
     public static final String DATA_RESULT_COMMUTE = "RESULT_PLACE";
+    private static final String EXTRA_PICK_HOME_ADDRESS = "EXTRA_PICK_HOME_ADDRESS";
+    private static final String EXTRA_HOME_ADDRESS = "EXTRA_HOME_ADDRESS";
 
-    public static Intent newIntent(Context context) {
-        return new Intent(context, PickCommuteActivity.class);
+    private String mHomeAddress;
+    private boolean mPickHomeAddress;
+
+    public static Intent newIntent(Context context, String homeAddress, boolean pickHomeAddress) {
+        Intent intent = new Intent(context, PickCommuteActivity.class);
+        intent.putExtra(EXTRA_HOME_ADDRESS, homeAddress);
+        intent.putExtra(EXTRA_PICK_HOME_ADDRESS, pickHomeAddress);
+        return intent;
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mHomeAddress = getIntent().getStringExtra(EXTRA_HOME_ADDRESS);
+        mPickHomeAddress = getIntent().getBooleanExtra(EXTRA_PICK_HOME_ADDRESS, false);
         try {
             Intent intent = new PlacePicker.IntentBuilder().build(this);
             startActivityForResult(intent, REQUEST_PLACE_PICKER);
@@ -57,22 +68,23 @@ public class PickCommuteActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this, placeData);
                 Intent data = new Intent();
-                data.putExtra(DATA_RESULT_COMMUTE, place);
-                setResult(resultCode, data);
+                newCommute(place, commute -> {
+                    data.putExtra(DATA_RESULT_COMMUTE, commute);
+                    setResult(resultCode, data);
+                });
             }
         }
     }
 
-    public void addCommute(Place place) {
-        if (getItemCount() == 0) {
-            mCommuteList.add(new Commute(placeLabel(place), 0));
-            notifyDataSetChanged();
+    public void newCommute(Place place, Consumer<Commute> callback) {
+        if (mPickHomeAddress) {
+            callback.accept(new Commute(placeLabel(place), 0));
         } else {
-            findDistanceAndAddCommute(mCommuteList.get(0).address, place);
+            findDistance(mHomeAddress, place, callback);
         }
     }
 
-    private void findDistanceAndAddCommute(String fromAddress, final Place toPlace) {
+    private void findDistance(String fromAddress, final Place toPlace, Consumer<Commute> callback) {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
@@ -97,7 +109,7 @@ public class PickCommuteActivity extends AppCompatActivity {
                                 .orElse(0);
                         String label = placeLabel(toPlace);
                         Commute commute = new Commute(label, duration);
-                        PickCommuteActivity.this.setResult(commute);
+                        callback.accept(commute);
                     }
 
                     @Override
