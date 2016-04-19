@@ -63,7 +63,8 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
 
     private String getHomeAddress() {
         return Optional.ofNullable(mAdapter.getItems())
-                .map(l -> l.get(0))
+                .filter(list -> list.size() > 0)
+                .map(list -> list.get(0))
                 .map(item -> item.address)
                 .orElse(null);
     }

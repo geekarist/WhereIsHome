@@ -71,6 +71,7 @@ public class PickCommuteActivity extends AppCompatActivity {
                 newCommute(place, commute -> {
                     data.putExtra(DATA_RESULT_COMMUTE, commute);
                     setResult(resultCode, data);
+                    finish();
                 });
             }
         }
