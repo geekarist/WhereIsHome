@@ -5,25 +5,25 @@ import android.os.Parcelable;
 
 public class Commute implements Parcelable {
     final String mAddress;
-    final int mTime;
+    final int mDurationSeconds;
     final String mDurationText;
 
     public Commute(String address, int time, String durationText) {
         mAddress = address;
-        mTime = time;
+        mDurationSeconds = time;
         mDurationText = durationText;
     }
 
     protected Commute(Parcel in) {
         mAddress = in.readString();
-        mTime = in.readInt();
+        mDurationSeconds = in.readInt();
         mDurationText = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mAddress);
-        dest.writeInt(mTime);
+        dest.writeInt(mDurationSeconds);
         dest.writeString(mDurationText);
     }
 

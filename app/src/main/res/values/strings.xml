@@ -3,4 +3,5 @@
     <string name="place_image_content_desc">Place Image</string>
     <string name="text_commuting_time">Add a place</string>
     <string name="commuting_time_placeholder">Add some places and you\'ll see something here</string>
+    <string name="pick_commute_your_home_duration_text">This is your home</string>
 </resources>

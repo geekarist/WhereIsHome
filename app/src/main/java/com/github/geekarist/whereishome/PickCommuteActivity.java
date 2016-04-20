@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.annimon.stream.Optional;
 import com.annimon.stream.function.Consumer;
@@ -29,13 +31,18 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public class PickCommuteActivity extends AppCompatActivity {
-    private static final int REQUEST_PLACE_PICKER = 1;
     public static final String DATA_RESULT_COMMUTE = "RESULT_PLACE";
+
+    private static final int REQUEST_PLACE_PICKER = 1;
+
     private static final String EXTRA_PICK_HOME_ADDRESS = "EXTRA_PICK_HOME_ADDRESS";
     private static final String EXTRA_HOME_ADDRESS = "EXTRA_HOME_ADDRESS";
 
+    private static final String TAG = PickCommuteActivity.class.getSimpleName();
+
     private String mHomeAddress;
     private boolean mPickHomeAddress;
+    private DistanceMatrixService mDistanceMatrixService;
 
     public static Intent newIntent(Context context, String homeAddress, boolean pickHomeAddress) {
         Intent intent = new Intent(context, PickCommuteActivity.class);
@@ -60,32 +67,11 @@ public class PickCommuteActivity extends AppCompatActivity {
                     .setTitle("Google Play Services Error")
                     .setMessage(msg.toString()).create().show();
         }
+
+        createDistanceMatrixService();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent placeData) {
-        if (requestCode == REQUEST_PLACE_PICKER) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(this, placeData);
-                Intent data = new Intent();
-                newCommute(place, commute -> {
-                    data.putExtra(DATA_RESULT_COMMUTE, commute);
-                    setResult(resultCode, data);
-                    finish();
-                });
-            }
-        }
-    }
-
-    public void newCommute(Place place, Consumer<Commute> callback) {
-        if (mPickHomeAddress) {
-            callback.accept(new Commute(placeLabel(place), 0, "This is your home"));
-        } else {
-            findDistance(mHomeAddress, place, callback);
-        }
-    }
-
-    private void findDistance(String fromAddress, final Place toPlace, Consumer<Commute> callback) {
+    private void createDistanceMatrixService() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
@@ -95,24 +81,41 @@ public class PickCommuteActivity extends AppCompatActivity {
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+        mDistanceMatrixService = retrofit.create(DistanceMatrixService.class);
+    }
 
-        DistanceMatrixService service = retrofit.create(DistanceMatrixService.class);
-        service.getDistanceMatrix(
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent placeData) {
+        if (requestCode == REQUEST_PLACE_PICKER) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(this, placeData);
+                Intent data = new Intent();
+                createCommute(place, newCommute -> {
+                    data.putExtra(DATA_RESULT_COMMUTE, newCommute);
+                    setResult(resultCode, data);
+                    finish();
+                });
+            }
+        }
+    }
+
+    public void createCommute(Place place, Consumer<Commute> callback) {
+        if (mPickHomeAddress) {
+            callback.accept(new Commute(placeLabel(place), 0, getString(R.string.pick_commute_your_home_duration_text)));
+        } else {
+            findDistance(mHomeAddress, place, callback);
+        }
+    }
+
+    private void findDistance(String fromAddress, final Place toPlace, Consumer<Commute> callback) {
+        mDistanceMatrixService.getDistanceMatrix(
                 String.valueOf(fromAddress), String.valueOf(toPlace.getAddress()),
                 "AIzaSyB1FGeq0g-kv2_pa7N9J-t601V9Nj9ibfw")
                 .enqueue(new Callback<DistanceMatrix>() {
                     @Override
                     public void onResponse(Call<DistanceMatrix> call, Response<DistanceMatrix> response) {
-                        int durationSeconds = Optional.ofNullable(response)
-                                .map(Response::body).map(b -> b.rows).map(rows -> rows.get(0))
-                                .map(r -> r.elements).map(elements -> elements.get(0))
-                                .map(e -> e.duration).map(d -> (int) Math.round(d.value))
-                                .orElse(0);
-                        String durationText = Optional.ofNullable(response)
-                                .map(Response::body).map(b -> b.rows).map(rows -> rows.get(0))
-                                .map(r -> r.elements).map(elements -> elements.get(0))
-                                .map(e -> e.duration).map(d -> d.text)
-                                .orElse("Not found");
+                        int durationSeconds = optionalOfDuration(response).map(d -> (int) Math.round(d.value)).orElse(0);
+                        String durationText = optionalOfDuration(response).map(d -> d.text).orElse("Not found");
                         String label = placeLabel(toPlace);
                         Commute commute = new Commute(label, durationSeconds, durationText);
                         callback.accept(commute);
@@ -120,8 +123,18 @@ public class PickCommuteActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<DistanceMatrix> call, Throwable t) {
+                        String msg = "Error during DistanceMatrix call";
+                        Toast.makeText(PickCommuteActivity.this, msg, Toast.LENGTH_LONG).show();
+                        Log.e(TAG, msg, t);
                     }
                 });
+    }
+
+    private Optional<DistanceMatrixElement> optionalOfDuration(Response<DistanceMatrix> response) {
+        return Optional.ofNullable(response)
+                .map(Response::body).map(b -> b.rows).map(rows -> rows.get(0))
+                .map(r -> r.elements).map(elements -> elements.get(0))
+                .map(e -> e.duration);
     }
 
     private String placeLabel(Place place) {
