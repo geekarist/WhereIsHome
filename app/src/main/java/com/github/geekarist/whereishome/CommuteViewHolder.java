@@ -15,8 +15,8 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Commute commute) {
-        mTextAddress.setText(commute.address);
-        mTextTime.setText(String.valueOf(commute.time));
+        mTextAddress.setText(commute.mAddress);
+        mTextTime.setText(String.valueOf(commute.mDurationText));
     }
 
 }

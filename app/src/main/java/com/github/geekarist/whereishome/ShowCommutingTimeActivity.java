@@ -65,7 +65,7 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
         return Optional.ofNullable(mAdapter.getItems())
                 .filter(list -> list.size() > 0)
                 .map(list -> list.get(0))
-                .map(item -> item.address)
+                .map(item -> item.mAddress)
                 .orElse(null);
     }
 

@@ -79,7 +79,7 @@ public class PickCommuteActivity extends AppCompatActivity {
 
     public void newCommute(Place place, Consumer<Commute> callback) {
         if (mPickHomeAddress) {
-            callback.accept(new Commute(placeLabel(place), 0));
+            callback.accept(new Commute(placeLabel(place), 0, "This is your home"));
         } else {
             findDistance(mHomeAddress, place, callback);
         }
@@ -103,13 +103,18 @@ public class PickCommuteActivity extends AppCompatActivity {
                 .enqueue(new Callback<DistanceMatrix>() {
                     @Override
                     public void onResponse(Call<DistanceMatrix> call, Response<DistanceMatrix> response) {
-                        int duration = Optional.ofNullable(response)
+                        int durationSeconds = Optional.ofNullable(response)
                                 .map(Response::body).map(b -> b.rows).map(rows -> rows.get(0))
                                 .map(r -> r.elements).map(elements -> elements.get(0))
                                 .map(e -> e.duration).map(d -> (int) Math.round(d.value))
                                 .orElse(0);
+                        String durationText = Optional.ofNullable(response)
+                                .map(Response::body).map(b -> b.rows).map(rows -> rows.get(0))
+                                .map(r -> r.elements).map(elements -> elements.get(0))
+                                .map(e -> e.duration).map(d -> d.text)
+                                .orElse("Not found");
                         String label = placeLabel(toPlace);
-                        Commute commute = new Commute(label, duration);
+                        Commute commute = new Commute(label, durationSeconds, durationText);
                         callback.accept(commute);
                     }
 
