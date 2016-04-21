@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,7 +11,8 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/view_place_description"
+            android:layout_width="250sp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_margin="5dp"
@@ -22,36 +22,34 @@
                 android:id="@+id/place_text_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="14 rue des Verts Manteaux du Québec, Paris"/>
+                tools:text="14 rue des Verts Manteaux du Québec, Paris" />
 
             <TextView
                 android:id="@+id/place_text_commute_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="42 min."/>
+                tools:text="42 min." />
 
             <TextView
                 android:id="@+id/place_text_weekly_commute_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="5 times"/>
+                tools:text="5 times" />
 
             <TextView
                 android:id="@+id/place_text_weekly_commute_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="210 min."/>
+                tools:text="210 min." />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/place_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+        <ImageButton
+            android:id="@+id/view_place_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_margin="5dp"
-            android:contentDescription="@string/place_image_content_desc"
-            android:src="#ffffc0"
-            android:visibility="gone" />
+            android:contentDescription="@string/view_place_remove"
+            android:src="@drawable/ic_delete_black_24dp" />
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

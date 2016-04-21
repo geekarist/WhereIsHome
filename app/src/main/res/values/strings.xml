@@ -4,4 +4,6 @@
     <string name="text_commuting_time">Add a place</string>
     <string name="commuting_time_placeholder">Add some places and you\'ll see something here</string>
     <string name="pick_commute_your_home_duration_text">This is your home</string>
+    <string name="pick_commute_no_itinerary_found">No itinerary found</string>
+    <string name="view_place_remove">Remove</string>
 </resources>

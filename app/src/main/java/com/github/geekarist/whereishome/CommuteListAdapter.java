@@ -14,7 +14,7 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
     @Override
     public CommuteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_place, parent, false);
-        return new CommuteViewHolder(itemView);
+        return new CommuteViewHolder(itemView, this);
     }
 
     @Override
@@ -34,6 +34,11 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
 
     public void addItems(List<Commute> items) {
         mCommuteList.addAll(items);
+        notifyDataSetChanged();
+    }
+
+    public void removeItem(Commute commute) {
+        mCommuteList.remove(commute);
         notifyDataSetChanged();
     }
 }

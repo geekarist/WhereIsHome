@@ -115,7 +115,7 @@ public class PickCommuteActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<DistanceMatrix> call, Response<DistanceMatrix> response) {
                         int durationSeconds = optionalOfDuration(response).map(d -> (int) Math.round(d.value)).orElse(0);
-                        String durationText = optionalOfDuration(response).map(d -> d.text).orElse("Not found");
+                        String durationText = optionalOfDuration(response).map(d -> d.text).orElse(getString(R.string.pick_commute_no_itinerary_found));
                         String label = placeLabel(toPlace);
                         Commute commute = new Commute(label, durationSeconds, durationText);
                         callback.accept(commute);
