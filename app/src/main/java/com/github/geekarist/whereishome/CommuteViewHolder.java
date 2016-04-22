@@ -15,7 +15,7 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
     TextView mTextAddress;
     @Bind(R.id.place_text_commute_time)
     TextView mTextTime;
-    @Bind(R.id.view_place_remove)
+    @Bind(R.id.place_remove)
     ImageButton mButtonRemove;
 
     private final CommuteListAdapter mAdapter;
@@ -34,7 +34,7 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
         mButtonRemove.setVisibility(deletable ? View.VISIBLE : View.GONE);
     }
 
-    @OnClick(R.id.view_place_remove)
+    @OnClick(R.id.place_remove)
     public void onClickRemove() {
         new AlertDialog.Builder(itemView.getContext())
                 .setMessage("Sure you want to delete the commute to " + mTextAddress.getText() + "?")

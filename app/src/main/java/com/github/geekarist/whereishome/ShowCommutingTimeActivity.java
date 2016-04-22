@@ -22,7 +22,7 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
 
     private static final int REQUEST_PLACE = 1;
 
-    @Bind(R.id.list_commutes)
+    @Bind(R.id.commuting_time_list_commutes)
     RecyclerView mCommuteListView;
 
     private GoogleApiClient mGoogleApiClient;
@@ -51,7 +51,7 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
         mGoogleApiClient.connect();
     }
 
-    @OnClick(R.id.button_add_place)
+    @OnClick(R.id.commuting_time_button_add_place)
     public void onClickButtonAddPlace(View v) {
         Intent intent = PickCommuteActivity.newIntent(this, getHomeAddress(), isHomeAddressToPick());
         startActivityForResult(intent, REQUEST_PLACE);

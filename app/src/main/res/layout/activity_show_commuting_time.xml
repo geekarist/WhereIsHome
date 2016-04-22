@@ -12,7 +12,7 @@
     tools:context="com.github.geekarist.whereishome.ShowCommutingTimeActivity">
 
     <TextView
-        android:id="@+id/text_commuting_time"
+        android:id="@+id/commuting_time_text_commuting_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
@@ -20,19 +20,19 @@
         android:text="@string/commuting_time_placeholder" />
 
     <Button
-        android:id="@+id/button_add_place"
+        android:id="@+id/commuting_time_button_add_place"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/text_commuting_time"
+        android:layout_below="@id/commuting_time_text_commuting_time"
         android:layout_marginTop="24dp"
         android:text="@string/text_commuting_time"
         />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_commutes"
+        android:id="@+id/commuting_time_list_commutes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/button_add_place"
+        android:layout_below="@id/commuting_time_button_add_place"
         tools:listitem="@layout/view_place"
         />
 </RelativeLayout>
