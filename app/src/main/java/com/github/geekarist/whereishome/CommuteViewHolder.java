@@ -3,6 +3,7 @@ package com.github.geekarist.whereishome;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -14,6 +15,8 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
     TextView mTextAddress;
     @Bind(R.id.place_text_commute_time)
     TextView mTextTime;
+    @Bind(R.id.view_place_remove)
+    ImageButton mButtonRemove;
 
     private final CommuteListAdapter mAdapter;
     private Commute mCommute;
@@ -24,10 +27,11 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void bind(Commute commute) {
+    public void bind(Commute commute, boolean deletable) {
         mCommute = commute;
         mTextAddress.setText(commute.mAddress);
         mTextTime.setText(String.valueOf(commute.mDurationText));
+        mButtonRemove.setVisibility(deletable ? View.VISIBLE : View.GONE);
     }
 
     @OnClick(R.id.view_place_remove)

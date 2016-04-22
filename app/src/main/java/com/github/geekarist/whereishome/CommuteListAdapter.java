@@ -20,7 +20,8 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
     @Override
     public void onBindViewHolder(CommuteViewHolder holder, int position) {
         Commute commute = mCommuteList.get(position);
-        holder.bind(commute);
+        boolean deletable = position > 0 || (position == 0 && getItemCount() == 1);
+        holder.bind(commute, deletable);
     }
 
     @Override
