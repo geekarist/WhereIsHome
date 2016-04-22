@@ -72,8 +72,10 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_PLACE) {
-            Commute commute = data.getParcelableExtra(PickCommuteActivity.DATA_RESULT_COMMUTE);
-            mAdapter.addItems(Collections.singletonList(commute));
+            if (resultCode == RESULT_OK) {
+                Commute commute = data.getParcelableExtra(PickCommuteActivity.DATA_RESULT_COMMUTE);
+                mAdapter.addItems(Collections.singletonList(commute));
+            }
         }
     }
 

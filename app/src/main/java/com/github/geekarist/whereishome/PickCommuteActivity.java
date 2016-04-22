@@ -95,6 +95,9 @@ public class PickCommuteActivity extends AppCompatActivity {
                     setResult(resultCode, data);
                     finish();
                 });
+            } else {
+                setResult(RESULT_CANCELED);
+                finish();
             }
         }
     }
