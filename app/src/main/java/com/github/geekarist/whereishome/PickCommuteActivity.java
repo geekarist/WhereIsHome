@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,10 +40,8 @@ public class PickCommuteActivity extends AppCompatActivity {
     public static final String DATA_RESULT_COMMUTE = "RESULT_PLACE";
 
     private static final int REQUEST_PLACE_PICKER = 1;
-
     private static final String EXTRA_PICK_HOME_ADDRESS = "EXTRA_PICK_HOME_ADDRESS";
     private static final String EXTRA_HOME_ADDRESS = "EXTRA_HOME_ADDRESS";
-
     private static final String TAG = PickCommuteActivity.class.getSimpleName();
 
     private String mHomeAddress;
@@ -51,6 +51,10 @@ public class PickCommuteActivity extends AppCompatActivity {
 
     @Bind(R.id.pick_commute_text_address_value)
     TextView mAddressText;
+    @Bind(R.id.pick_commute_edit_number_per_week)
+    EditText mEditNumber;
+    @Bind(R.id.pick_commute_text_number_per_week)
+    TextView mEditNumberLabel;
 
     public static Intent newIntent(Context context, String homeAddress, boolean pickHomeAddress) {
         Intent intent = new Intent(context, PickCommuteActivity.class);
@@ -67,6 +71,12 @@ public class PickCommuteActivity extends AppCompatActivity {
 
         mHomeAddress = getIntent().getStringExtra(EXTRA_HOME_ADDRESS);
         mPickHomeAddress = getIntent().getBooleanExtra(EXTRA_PICK_HOME_ADDRESS, false);
+
+        if (mPickHomeAddress) {
+            mEditNumberLabel.setVisibility(View.GONE);
+            mEditNumber.setVisibility(View.GONE);
+        }
+
         try {
             Intent intent = new PlacePicker.IntentBuilder().build(this);
             startActivityForResult(intent, REQUEST_PLACE_PICKER);
