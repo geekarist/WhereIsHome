@@ -6,4 +6,8 @@
     <string name="pick_commute_your_home_duration_text">This is your home</string>
     <string name="pick_commute_no_itinerary_found">No itinerary found</string>
     <string name="view_place_remove">Remove</string>
+    <string name="pick_commute_text_add_new_commute">You\'re about to add a new commute to your scenario</string>
+    <string name="pick_commute_text_address">Address</string>
+    <string name="pick_commute_text_number_per_week">Number of commutes per week</string>
+    <string name="pick_commute_edit_number_per_week_default_value">10</string>
 </resources>

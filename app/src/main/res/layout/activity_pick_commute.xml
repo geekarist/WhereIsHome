@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/pick_commute_text_add_new_commute"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_title_padding"
+        android:text="@string/pick_commute_text_add_new_commute"
+        android:textAlignment="center"
+        android:textSize="@dimen/activity_title_size" />
+
+    <TextView
+        android:id="@+id/pick_commute_text_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pick_commute_text_add_new_commute"
+        android:paddingBottom="@dimen/activity_subtitle_padding_bottom"
+        android:paddingTop="@dimen/activity_subtitle_padding_top"
+        android:text="@string/pick_commute_text_address"
+        android:textAlignment="center"
+        android:textSize="@dimen/activity_subtitle_size" />
+
+    <TextView
+        android:id="@+id/pick_commute_text_address_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pick_commute_text_address"
+        android:textAlignment="center"
+        tools:text="156 boulevard Haussmann, 75008 Paris" />
+
+    <TextView
+        android:id="@+id/pick_commute_text_number_per_week"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pick_commute_text_address_value"
+        android:labelFor="@+id/pick_commute_edit_number_per_week"
+        android:paddingBottom="@dimen/activity_subtitle_padding_bottom"
+        android:paddingTop="@dimen/activity_subtitle_padding_top"
+        android:text="@string/pick_commute_text_number_per_week"
+        android:textAlignment="center"
+        android:textSize="@dimen/activity_subtitle_size" />
+
+    <EditText
+        android:id="@id/pick_commute_edit_number_per_week"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pick_commute_text_number_per_week"
+        android:layout_centerHorizontal="true"
+        android:inputType="number"
+        android:minWidth="50sp"
+        android:text="@string/pick_commute_edit_number_per_week_default_value"
+        android:textAlignment="center" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/accept" />
+</RelativeLayout>

@@ -54,6 +54,7 @@ public class PickCommuteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_pick_commute);
         mHomeAddress = getIntent().getStringExtra(EXTRA_HOME_ADDRESS);
         mPickHomeAddress = getIntent().getBooleanExtra(EXTRA_PICK_HOME_ADDRESS, false);
         try {
