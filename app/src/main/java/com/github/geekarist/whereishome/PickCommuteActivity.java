@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.annimon.stream.Optional;
@@ -20,6 +21,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -43,6 +47,10 @@ public class PickCommuteActivity extends AppCompatActivity {
     private String mHomeAddress;
     private boolean mPickHomeAddress;
     private DistanceMatrixService mDistanceMatrixService;
+    private Place mSelectedPlace;
+
+    @Bind(R.id.pick_commute_text_address_value)
+    TextView mAddressText;
 
     public static Intent newIntent(Context context, String homeAddress, boolean pickHomeAddress) {
         Intent intent = new Intent(context, PickCommuteActivity.class);
@@ -55,6 +63,8 @@ public class PickCommuteActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_commute);
+        ButterKnife.bind(this);
+
         mHomeAddress = getIntent().getStringExtra(EXTRA_HOME_ADDRESS);
         mPickHomeAddress = getIntent().getBooleanExtra(EXTRA_PICK_HOME_ADDRESS, false);
         try {
@@ -89,13 +99,8 @@ public class PickCommuteActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent placeData) {
         if (requestCode == REQUEST_PLACE_PICKER) {
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(this, placeData);
-                Intent data = new Intent();
-                createCommute(place, newCommute -> {
-                    data.putExtra(DATA_RESULT_COMMUTE, newCommute);
-                    setResult(resultCode, data);
-                    finish();
-                });
+                mSelectedPlace = PlacePicker.getPlace(this, placeData);
+                mAddressText.setText(placeLabel(mSelectedPlace));
             } else {
                 setResult(RESULT_CANCELED);
                 finish();
@@ -143,6 +148,16 @@ public class PickCommuteActivity extends AppCompatActivity {
 
     private String placeLabel(Place place) {
         return String.valueOf(place.getAddress() != null ? place.getAddress() : place.getLatLng());
+    }
+
+    @OnClick(R.id.pick_commute_button_accept)
+    void onClickAccept() {
+        createCommute(mSelectedPlace, newCommute -> {
+            Intent data = new Intent();
+            data.putExtra(DATA_RESULT_COMMUTE, newCommute);
+            setResult(RESULT_OK, data);
+            finish();
+        });
     }
 
     interface DistanceMatrixService {
