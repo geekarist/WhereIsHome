@@ -7,17 +7,20 @@ public class Commute implements Parcelable {
     final String mAddress;
     final int mDurationSeconds;
     final String mDurationText;
+    final int mNumberPerWeek;
 
-    public Commute(String address, int time, String durationText) {
+    public Commute(String address, int time, String durationText, int numberPerWeek) {
         mAddress = address;
         mDurationSeconds = time;
         mDurationText = durationText;
+        mNumberPerWeek = numberPerWeek;
     }
 
     protected Commute(Parcel in) {
         mAddress = in.readString();
         mDurationSeconds = in.readInt();
         mDurationText = in.readString();
+        mNumberPerWeek = in.readInt();
     }
 
     @Override
@@ -25,6 +28,7 @@ public class Commute implements Parcelable {
         dest.writeString(mAddress);
         dest.writeInt(mDurationSeconds);
         dest.writeString(mDurationText);
+        dest.writeInt(mNumberPerWeek);
     }
 
     @Override

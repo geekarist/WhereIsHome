@@ -118,11 +118,11 @@ public class PickCommuteActivity extends AppCompatActivity {
         }
     }
 
-    public void createCommute(Place place, Consumer<Commute> callback) {
+    public void createCommute(Consumer<Commute> callback) {
         if (mPickHomeAddress) {
-            callback.accept(new Commute(placeLabel(place), 0, getString(R.string.pick_commute_your_home_duration_text)));
+            callback.accept(new Commute(placeLabel(mSelectedPlace), 0, getString(R.string.pick_commute_your_home_duration_text), 0));
         } else {
-            findDistance(mHomeAddress, place, callback);
+            findDistance(mHomeAddress, mSelectedPlace, callback);
         }
     }
 
@@ -136,7 +136,10 @@ public class PickCommuteActivity extends AppCompatActivity {
                         int durationSeconds = optionalOfDuration(response).map(d -> (int) Math.round(d.value)).orElse(0);
                         String durationText = optionalOfDuration(response).map(d -> d.text).orElse(getString(R.string.pick_commute_no_itinerary_found));
                         String label = placeLabel(toPlace);
-                        Commute commute = new Commute(label, durationSeconds, durationText);
+                        Commute commute =
+                                new Commute(
+                                        label, durationSeconds, durationText,
+                                        Integer.parseInt(String.valueOf(mEditNumber.getText())));
                         callback.accept(commute);
                     }
 
@@ -162,7 +165,7 @@ public class PickCommuteActivity extends AppCompatActivity {
 
     @OnClick(R.id.pick_commute_button_accept)
     void onClickAccept() {
-        createCommute(mSelectedPlace, newCommute -> {
+        createCommute(newCommute -> {
             Intent data = new Intent();
             data.putExtra(DATA_RESULT_COMMUTE, newCommute);
             setResult(RESULT_OK, data);

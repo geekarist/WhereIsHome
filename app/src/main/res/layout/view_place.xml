@@ -31,16 +31,10 @@
                 tools:text="42 min." />
 
             <TextView
-                android:id="@+id/place_text_weekly_commute_count"
+                android:id="@+id/place_text_number_per_week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="5 times" />
-
-            <TextView
-                android:id="@+id/place_text_weekly_commute_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="210 min." />
+                tools:text="10 times per week" />
         </LinearLayout>
 
         <ImageButton
