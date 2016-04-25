@@ -34,11 +34,16 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
         mTextAddress.setText(commute.mAddress);
 
         mTextTime.setText(String.valueOf(commute.mDurationText));
-
         mButtonRemove.setVisibility(deletable ? View.VISIBLE : View.GONE);
 
-        String numPerWeek = itemView.getContext().getString(R.string.view_place_text_number_per_week, commute.mNumberPerWeek);
-        mTextNumberPerWeek.setText(numPerWeek);
+        if (mCommute.mNumberPerWeek > 0) {
+            String numPerWeek = itemView.getContext().getString(
+                    R.string.view_place_text_number_per_week, commute.mNumberPerWeek);
+            mTextNumberPerWeek.setText(numPerWeek);
+            mTextNumberPerWeek.setVisibility(View.VISIBLE);
+        } else {
+            mTextNumberPerWeek.setVisibility(View.GONE);
+        }
     }
 
     @OnClick(R.id.place_remove)
