@@ -35,6 +35,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="10 times per week" />
+
+            <TextView
+                android:id="@+id/place_text_weekly_commute_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="10 times per week" />
         </LinearLayout>
 
         <ImageButton

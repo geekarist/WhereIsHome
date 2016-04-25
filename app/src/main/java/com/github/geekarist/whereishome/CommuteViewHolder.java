@@ -19,6 +19,8 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
     ImageButton mButtonRemove;
     @Bind(R.id.place_text_number_per_week)
     TextView mTextNumberPerWeek;
+    @Bind(R.id.place_text_weekly_commute_time)
+    TextView mTextWeeklyCommuteTime;
 
     private final CommuteListAdapter mAdapter;
     private Commute mCommute;
@@ -41,6 +43,12 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
                     R.string.view_place_text_number_per_week, commute.mNumberPerWeek);
             mTextNumberPerWeek.setText(numPerWeek);
             mTextNumberPerWeek.setVisibility(View.VISIBLE);
+
+            int weeklyTimeSeconds = commute.mNumberPerWeek * commute.mDurationSeconds;
+            float weeklyTimeMinutes = weeklyTimeSeconds / 60f;
+            int weeklyTimeId = R.string.place_total_weekly_time;
+            String weeklyTimeStr = itemView.getContext().getString(weeklyTimeId, weeklyTimeMinutes);
+            mTextWeeklyCommuteTime.setText(weeklyTimeStr);
         } else {
             mTextNumberPerWeek.setVisibility(View.GONE);
         }
