@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -65,7 +66,9 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
     }
 
     private void updateCommutingTime() {
-        mCommutingTime.setText(getString(R.string.commuting_time_total_label, mAdapter.getTotalTime()));
+        Integer totalTime = mAdapter.getTotalTime();
+        String totalTimeStr = DateUtils.formatElapsedTime(totalTime);
+        mCommutingTime.setText(getString(R.string.commuting_time_total_label, totalTimeStr));
     }
 
     @OnClick(R.id.commuting_time_button_add_place)
