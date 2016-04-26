@@ -49,7 +49,7 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
         return Stream.of(getItems())
                 .map(commute -> commute.mDurationSeconds)
                 .reduce((duration1, duration2) -> duration1 + duration2)
-                .get();
+                .orElse(0);
     }
 }
 
