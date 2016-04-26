@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.annimon.stream.Stream;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,13 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
     public void removeItem(Commute commute) {
         mCommuteList.remove(commute);
         notifyDataSetChanged();
+    }
+
+    public Integer getTotalTime() {
+        return Stream.of(getItems())
+                .map(commute -> commute.mDurationSeconds)
+                .reduce((duration1, duration2) -> duration1 + duration2)
+                .get();
     }
 }
 

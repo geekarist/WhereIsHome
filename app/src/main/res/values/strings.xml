@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">WhereIsHome</string>
 
-    <string name="place_image_content_desc">Place Image</string>
-    <string name="text_commuting_time">Add a place</string>
-    <string name="commuting_time_placeholder">Add some places and you\'ll see something here</string>
+    <string name="commuting_time_add_place_label">Add a place</string>
+    <string name="commuting_time_total_placeholder">Add some places and you\'ll see something here</string>
+    <string name="commuting_time_total_label">You\'ll spend %1$d seconds commuting each week</string>
 
     <string name="view_place_remove">Remove</string>
     <string name="view_place_text_number_per_week">%1$d times per week</string>

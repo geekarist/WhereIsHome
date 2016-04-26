@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.annimon.stream.Optional;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -24,10 +25,20 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
 
     @Bind(R.id.commuting_time_list_commutes)
     RecyclerView mCommuteListView;
+    @Bind(R.id.commuting_time_text_commuting_time)
+    TextView mCommutingTime;
 
     private GoogleApiClient mGoogleApiClient;
     private CommuteListAdapter mAdapter;
     private CommuteListPersistence mPersistence;
+
+    private RecyclerView.AdapterDataObserver mCommuteTimeUpdate = new RecyclerView.AdapterDataObserver() {
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            updateCommutingTime();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +52,8 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
         mCommuteListView.setAdapter(mAdapter);
         mPersistence = new CommuteListPersistence(mAdapter, this, new Gson());
         mAdapter.registerAdapterDataObserver(mPersistence);
+        mAdapter.registerAdapterDataObserver(mCommuteTimeUpdate);
+        mAdapter.notifyDataSetChanged();
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
@@ -49,6 +62,10 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
                 .enableAutoManage(this, null)
                 .build();
         mGoogleApiClient.connect();
+    }
+
+    private void updateCommutingTime() {
+        mCommutingTime.setText(getString(R.string.commuting_time_total_label, mAdapter.getTotalTime()));
     }
 
     @OnClick(R.id.commuting_time_button_add_place)
@@ -84,5 +101,6 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
         super.onDestroy();
         mGoogleApiClient.disconnect();
         mAdapter.unregisterAdapterDataObserver(mPersistence);
+        mAdapter.unregisterAdapterDataObserver(mCommuteTimeUpdate);
     }
 }
