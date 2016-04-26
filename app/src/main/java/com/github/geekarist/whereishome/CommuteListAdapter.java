@@ -47,7 +47,7 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
 
     public Integer getTotalTime() {
         return Stream.of(getItems())
-                .map(commute -> commute.mDurationSeconds)
+                .map(commute -> commute.mDurationSeconds * commute.mNumberPerWeek)
                 .reduce((duration1, duration2) -> duration1 + duration2)
                 .orElse(0);
     }
