@@ -1,8 +1,15 @@
 # WhereIsHome
 
+## Features
+
+Commute list:
+
+- Display human readable week total
+
 ## Planned features
 
 Multiple scenarios:
+
 - Create scenario
 - Read scenarios: list as tabs or view pager
 - Update a scenario
@@ -10,12 +17,11 @@ Multiple scenarios:
 - Clone a scenario
 
 Commute list:
-- Change a commute
-- Display human readable week total
-    - Convert value to readable string
-    - Set the value in the TextView
+
+* Change a commute
 
 Add commute activity:
+
 - Number of commutes per week to 0 by default
 - Preview commute time before accepting
 - Select the time of commute

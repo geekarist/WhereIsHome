@@ -6,6 +6,7 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -67,5 +68,13 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
                     mAdapter.removeItem(mCommute);
                 })
                 .show();
+    }
+
+    @OnClick(R.id.place_container)
+    public void onClick() {
+        Toast.makeText(
+                itemView.getContext(),
+                "You want to change the commute to: " + mTextAddress.getText(),
+                Toast.LENGTH_SHORT).show();
     }
 }
