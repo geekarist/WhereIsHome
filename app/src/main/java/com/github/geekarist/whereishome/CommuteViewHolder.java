@@ -2,6 +2,7 @@ package com.github.geekarist.whereishome;
 
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -45,9 +46,9 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
             mTextNumberPerWeek.setVisibility(View.VISIBLE);
 
             int weeklyTimeSeconds = commute.mNumberPerWeek * commute.mDurationSeconds;
-            float weeklyTimeMinutes = weeklyTimeSeconds / 60f;
             int weeklyTimeId = R.string.place_total_weekly_time;
-            String weeklyTimeStr = itemView.getContext().getString(weeklyTimeId, weeklyTimeMinutes);
+            String weeklyTimeValue = DateUtils.formatElapsedTime(weeklyTimeSeconds);
+            String weeklyTimeStr = itemView.getContext().getString(weeklyTimeId, weeklyTimeValue);
             mTextWeeklyCommuteTime.setText(weeklyTimeStr);
         } else {
             mTextNumberPerWeek.setVisibility(View.GONE);
