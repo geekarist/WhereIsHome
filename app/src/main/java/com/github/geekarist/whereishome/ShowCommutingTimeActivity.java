@@ -73,7 +73,7 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
 
     @OnClick(R.id.commuting_time_button_add_place)
     public void onClickButtonAddPlace(View v) {
-        Intent intent = PickCommuteActivity.newIntent(this, getHomeAddress(), isHomeAddressToPick());
+        Intent intent = PickCommuteActivity.newCreationIntent(this, getHomeAddress(), isHomeAddressToPick());
         startActivityForResult(intent, REQUEST_PLACE);
     }
 
