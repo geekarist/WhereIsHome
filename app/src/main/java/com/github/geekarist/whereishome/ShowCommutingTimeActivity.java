@@ -9,6 +9,7 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.annimon.stream.Optional;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
 import com.google.gson.Gson;
@@ -93,6 +94,9 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
         if (requestCode == REQUEST_PLACE) {
             if (resultCode == RESULT_OK) {
                 Commute commute = data.getParcelableExtra(PickCommuteActivity.DATA_RESULT_COMMUTE);
+                Optional.of(data)
+                        .map(d -> (Commute) d.getParcelableExtra(PickCommuteActivity.EXTRA_COMMUTE_TO_MODIFY))
+                        .ifPresent(c -> mAdapter.removeItem(c));
                 mAdapter.addItems(Collections.singletonList(commute));
             }
         }

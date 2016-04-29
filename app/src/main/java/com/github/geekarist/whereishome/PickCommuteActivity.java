@@ -44,13 +44,13 @@ import retrofit2.http.Query;
 
 public class PickCommuteActivity extends AppCompatActivity {
     public static final String DATA_RESULT_COMMUTE = "RESULT_PLACE";
+    public static final String EXTRA_COMMUTE_TO_MODIFY = "EXTRA_COMMUTE";
 
     private static final int REQUEST_PLACE_PICKER = 1;
     private static final String TAG = PickCommuteActivity.class.getSimpleName();
 
     private static final String EXTRA_PICK_HOME_ADDRESS = "EXTRA_PICK_HOME_ADDRESS";
     private static final String EXTRA_HOME_ADDRESS = "EXTRA_HOME_ADDRESS";
-    private static final String EXTRA_COMMUTE_TO_MODIFY = "EXTRA_COMMUTE";
 
 
     private String mHomeAddress;
@@ -208,6 +208,8 @@ public class PickCommuteActivity extends AppCompatActivity {
         createCommute(newCommute -> {
             Intent data = new Intent();
             data.putExtra(DATA_RESULT_COMMUTE, newCommute);
+            Optional.ofNullable(mCommuteToModify)
+                    .ifPresent(c -> data.putExtra(EXTRA_COMMUTE_TO_MODIFY, c));
             setResult(RESULT_OK, data);
             finish();
         });
