@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 
 import java.util.ArrayList;
@@ -50,6 +51,14 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
                 .map(commute -> commute.mDurationSeconds * commute.mNumberPerWeek)
                 .reduce((duration1, duration2) -> duration1 + duration2)
                 .orElse(0);
+    }
+
+    public String getHomeAddress() {
+        return Optional.of(this)
+                .map(CommuteListAdapter::getItems)
+                .map(a -> a.get(0))
+                .map(c -> c.mAddress)
+                .orElse(null);
     }
 }
 

@@ -6,7 +6,6 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,10 +25,12 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
 
     private final CommuteListAdapter mAdapter;
     private Commute mCommute;
+    private final ShowCommutingTimeActivity mActivity;
 
     public CommuteViewHolder(View itemView, CommuteListAdapter commuteListAdapter) {
         super(itemView);
         this.mAdapter = commuteListAdapter;
+        this.mActivity = (ShowCommutingTimeActivity) itemView.getContext();
         ButterKnife.bind(this, itemView);
     }
 
@@ -72,9 +73,7 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
 
     @OnClick(R.id.place_container)
     public void onClick() {
-        Toast.makeText(
-                itemView.getContext(),
-                "You want to change the commute to: " + mTextAddress.getText(),
-                Toast.LENGTH_SHORT).show();
+        mActivity.startModificationActivity(mCommute);
     }
+
 }
