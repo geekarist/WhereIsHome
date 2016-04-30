@@ -47,4 +47,29 @@ public class Commute implements Parcelable {
             return new Commute[size];
         }
     };
+
+    @SuppressWarnings("SimplifiableIfStatement")
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Commute commute = (Commute) o;
+
+        if (mDurationSeconds != commute.mDurationSeconds) return false;
+        if (mNumberPerWeek != commute.mNumberPerWeek) return false;
+        if (mAddress != null ? !mAddress.equals(commute.mAddress) : commute.mAddress != null)
+            return false;
+        return mDurationText != null ? mDurationText.equals(commute.mDurationText) : commute.mDurationText == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mAddress != null ? mAddress.hashCode() : 0;
+        result = 31 * result + mDurationSeconds;
+        result = 31 * result + (mDurationText != null ? mDurationText.hashCode() : 0);
+        result = 31 * result + mNumberPerWeek;
+        return result;
+    }
 }
