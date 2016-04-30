@@ -122,10 +122,14 @@ public class PickCommuteActivity extends AppCompatActivity {
         LatLngBounds bounds;
         try {
             List<Address> addresses = geocoder.getFromLocationName(commute.mAddress, 1);
-            Address address = addresses.get(0);
-            double longitude = address.getLongitude();
-            double latitude = address.getLatitude();
-            bounds = LatLngBounds.builder().include(new LatLng(latitude, longitude)).build();
+            bounds = Optional.ofNullable(addresses)
+                    .filter(l -> !l.isEmpty())
+                    .map(l -> l.get(0))
+                    .map(address -> {
+                        double longitude = address.getLongitude();
+                        double latitude = address.getLatitude();
+                        return LatLngBounds.builder().include(new LatLng(latitude, longitude)).build();
+                    }).orElse(null);
         } catch (IOException e) {
             return null;
         }
