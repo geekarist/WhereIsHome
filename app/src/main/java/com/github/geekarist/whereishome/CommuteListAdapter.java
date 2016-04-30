@@ -56,6 +56,7 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
     public String getHomeAddress() {
         return Optional.of(this)
                 .map(CommuteListAdapter::getItems)
+                .filter(l -> !l.isEmpty())
                 .map(a -> a.get(0))
                 .map(c -> c.mAddress)
                 .orElse(null);
