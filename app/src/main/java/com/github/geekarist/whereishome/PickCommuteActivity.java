@@ -194,7 +194,10 @@ public class PickCommuteActivity extends AppCompatActivity {
 
     private Optional<DistanceMatrixElement> optionalOfDuration(Response<DistanceMatrix> response) {
         return Optional.ofNullable(response)
-                .map(Response::body).map(b -> b.rows).map(rows -> rows.get(0))
+                .map(Response::body)
+                .map(b -> b.rows)
+                .filter(rows -> !rows.isEmpty())
+                .map(rows -> rows.get(0))
                 .map(r -> r.elements).map(elements -> elements.get(0))
                 .map(e -> e.duration);
     }
