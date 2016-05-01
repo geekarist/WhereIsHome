@@ -61,5 +61,16 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
                 .map(c -> c.mAddress)
                 .orElse(null);
     }
+
+    public void addItem(Commute commute) {
+        mCommuteList.add(commute);
+        notifyDataSetChanged();
+    }
+
+    public void replaceItem(Commute commuteToReplace, Commute newCommute) {
+        int index = getItems().indexOf(commuteToReplace);
+        getItems().set(index, newCommute);
+        notifyDataSetChanged();
+    }
 }
 

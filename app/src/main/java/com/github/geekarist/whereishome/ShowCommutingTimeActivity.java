@@ -9,12 +9,9 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.annimon.stream.Optional;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
 import com.google.gson.Gson;
-
-import java.util.Collections;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -81,11 +78,11 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
         return mAdapter.getItemCount() == 0;
     }
 
-    public void startModificationActivity(Commute mCommute) {
+    public void startModificationActivity(Commute commute) {
         String homeAddress = mAdapter.getHomeAddress();
-        boolean pickHomeAddress = mAdapter.getItemCount() == 0;
+        boolean pickHomeAddress = mAdapter.getItemCount() == 0 || mAdapter.getItems().indexOf(commute) == 0;
 
-        Intent intent = PickCommuteActivity.newModificationIntent(this, homeAddress, pickHomeAddress, mCommute);
+        Intent intent = PickCommuteActivity.newModificationIntent(this, homeAddress, pickHomeAddress, commute);
         startActivityForResult(intent, REQUEST_PLACE);
     }
 
@@ -93,11 +90,13 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_PLACE) {
             if (resultCode == RESULT_OK) {
-                Commute commute = data.getParcelableExtra(PickCommuteActivity.DATA_RESULT_COMMUTE);
-                Optional.of(data)
-                        .map(d -> (Commute) d.getParcelableExtra(PickCommuteActivity.EXTRA_COMMUTE_TO_MODIFY))
-                        .ifPresent(c -> mAdapter.removeItem(c));
-                mAdapter.addItems(Collections.singletonList(commute));
+                Commute pickedCommute = data.getParcelableExtra(PickCommuteActivity.DATA_RESULT_COMMUTE);
+                Commute commuteToModify = data.getParcelableExtra(PickCommuteActivity.EXTRA_COMMUTE_TO_MODIFY);
+                if (commuteToModify == null) {
+                    mAdapter.addItem(pickedCommute);
+                } else {
+                    mAdapter.replaceItem(commuteToModify, pickedCommute);
+                }
             }
         }
     }
