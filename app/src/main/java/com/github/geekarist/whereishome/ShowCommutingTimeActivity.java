@@ -70,20 +70,24 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
 
     @OnClick(R.id.commuting_time_button_add_place)
     public void onClickButtonAddPlace(View v) {
-        Intent intent = PickCommuteActivity.newCreationIntent(this, mAdapter.getHomeAddress(), isHomeAddressToPick());
+        Intent intent = PickCommuteActivity.newCreationIntent(this, mAdapter.getHomeAddress(), isHomeAddressToPickForAdding());
         startActivityForResult(intent, REQUEST_PLACE);
     }
 
-    private boolean isHomeAddressToPick() {
+    private boolean isHomeAddressToPickForAdding() {
         return mAdapter.getItemCount() == 0;
     }
 
     public void startModificationActivity(Commute commute) {
         String homeAddress = mAdapter.getHomeAddress();
-        boolean pickHomeAddress = mAdapter.getItemCount() == 0 || mAdapter.getItems().indexOf(commute) == 0;
+        boolean pickHomeAddress = isHomeAddress(commute);
 
         Intent intent = PickCommuteActivity.newModificationIntent(this, homeAddress, pickHomeAddress, commute);
         startActivityForResult(intent, REQUEST_PLACE);
+    }
+
+    private boolean isHomeAddress(Commute commute) {
+        return mAdapter.getItemCount() == 0 || mAdapter.getItems().indexOf(commute) == 0;
     }
 
     @Override
@@ -96,6 +100,9 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
                     mAdapter.addItem(pickedCommute);
                 } else {
                     mAdapter.replaceItem(commuteToModify, pickedCommute);
+                    if (isHomeAddress(pickedCommute)) {
+                        mAdapter.updateCommutingTimes();
+                    }
                 }
             }
         }

@@ -5,6 +5,11 @@
 Commute list:
 
 - Display human readable week total
+- Change a commute
+
+Add commute activity:
+
+- Preview commute time before accepting
 
 ## Planned features
 
@@ -18,10 +23,10 @@ Multiple scenarios:
 
 Commute list:
 
-* Change a commute
+* Update commuting times when home address is changed
 
 Add commute activity:
 
-- Number of commutes per week to 0 by default
-- Preview commute time before accepting
+- Number of commutes per week empty by default
 - Select the time of commute
+- Use Citymapper API to calculate commuting time

@@ -72,5 +72,9 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
         getItems().set(index, newCommute);
         notifyDataSetChanged();
     }
+
+    public void updateCommutingTimes() {
+        // TODO recalculate commuting time of each commute
+    }
 }
 
