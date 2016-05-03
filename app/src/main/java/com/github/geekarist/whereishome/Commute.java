@@ -5,9 +5,10 @@ import android.os.Parcelable;
 
 public class Commute implements Parcelable {
     final String mAddress;
-    final int mDurationSeconds;
-    final String mDurationText;
     final int mNumberPerWeek;
+
+    private int mDurationSeconds;
+    private String mDurationText;
 
     public Commute(String address, int time, String durationText, int numberPerWeek) {
         mAddress = address;
@@ -26,8 +27,8 @@ public class Commute implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mAddress);
-        dest.writeInt(mDurationSeconds);
-        dest.writeString(mDurationText);
+        dest.writeInt(getDurationSeconds());
+        dest.writeString(getDurationText());
         dest.writeInt(mNumberPerWeek);
     }
 
@@ -56,20 +57,36 @@ public class Commute implements Parcelable {
 
         Commute commute = (Commute) o;
 
-        if (mDurationSeconds != commute.mDurationSeconds) return false;
+        if (getDurationSeconds() != commute.getDurationSeconds()) return false;
         if (mNumberPerWeek != commute.mNumberPerWeek) return false;
         if (mAddress != null ? !mAddress.equals(commute.mAddress) : commute.mAddress != null)
             return false;
-        return mDurationText != null ? mDurationText.equals(commute.mDurationText) : commute.mDurationText == null;
+        return getDurationText() != null ? getDurationText().equals(commute.getDurationText()) : commute.getDurationText() == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = mAddress != null ? mAddress.hashCode() : 0;
-        result = 31 * result + mDurationSeconds;
-        result = 31 * result + (mDurationText != null ? mDurationText.hashCode() : 0);
+        result = 31 * result + getDurationSeconds();
+        result = 31 * result + (getDurationText() != null ? getDurationText().hashCode() : 0);
         result = 31 * result + mNumberPerWeek;
         return result;
+    }
+
+    public int getDurationSeconds() {
+        return mDurationSeconds;
+    }
+
+    public String getDurationText() {
+        return mDurationText;
+    }
+
+    public void setDurationSeconds(int durationSeconds) {
+        mDurationSeconds = durationSeconds;
+    }
+
+    public void setDurationText(String durationText) {
+        mDurationText = durationText;
     }
 }

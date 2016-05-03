@@ -38,7 +38,7 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
         mCommute = commute;
         mTextAddress.setText(commute.mAddress);
 
-        mTextTime.setText(String.valueOf(commute.mDurationText));
+        mTextTime.setText(String.valueOf(commute.getDurationText()));
         mButtonRemove.setVisibility(deletable ? View.VISIBLE : View.GONE);
 
         if (mCommute.mNumberPerWeek > 0) {
@@ -47,7 +47,7 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
             mTextNumberPerWeek.setText(numPerWeek);
             mTextNumberPerWeek.setVisibility(View.VISIBLE);
 
-            int weeklyTimeSeconds = commute.mNumberPerWeek * commute.mDurationSeconds;
+            int weeklyTimeSeconds = commute.mNumberPerWeek * commute.getDurationSeconds();
             int weeklyTimeId = R.string.place_total_weekly_time;
             String weeklyTimeValue = DateUtils.formatElapsedTime(weeklyTimeSeconds);
             String weeklyTimeStr = itemView.getContext().getString(weeklyTimeId, weeklyTimeValue);

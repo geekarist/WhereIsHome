@@ -14,6 +14,12 @@ import java.util.List;
 public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> {
     private final List<Commute> mCommuteList = new ArrayList<>();
 
+    private AddressSearch mAddressSearch;
+
+    public CommuteListAdapter() {
+        mAddressSearch = new AddressSearch();
+    }
+
     @Override
     public CommuteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_place, parent, false);
@@ -48,7 +54,7 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
 
     public Integer getTotalTime() {
         return Stream.of(getItems())
-                .map(commute -> commute.mDurationSeconds * commute.mNumberPerWeek)
+                .map(commute -> commute.getDurationSeconds() * commute.mNumberPerWeek)
                 .reduce((duration1, duration2) -> duration1 + duration2)
                 .orElse(0);
     }
@@ -73,8 +79,15 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
         notifyDataSetChanged();
     }
 
-    public void updateCommutingTimes() {
-        // TODO recalculate commuting time of each commute
+    public void updateCommutingTimes(String homeAddress) {
+        Stream.of(mCommuteList).forEach(commute ->
+                mAddressSearch
+                        .from(homeAddress)
+                        .to(commute.mAddress)
+                        .complete((durationText, durationSeconds) -> {
+                            commute.setDurationText(durationText);
+                            commute.setDurationSeconds(durationSeconds);
+                        }));
     }
 }
 

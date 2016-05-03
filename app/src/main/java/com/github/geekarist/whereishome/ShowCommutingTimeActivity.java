@@ -101,7 +101,7 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
                 } else {
                     mAdapter.replaceItem(commuteToModify, pickedCommute);
                     if (isHomeAddress(pickedCommute)) {
-                        mAdapter.updateCommutingTimes();
+                        mAdapter.updateCommutingTimes(pickedCommute.mAddress);
                     }
                 }
             }
