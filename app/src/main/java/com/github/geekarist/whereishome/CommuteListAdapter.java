@@ -14,10 +14,10 @@ import java.util.List;
 public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> {
     private final List<Commute> mCommuteList = new ArrayList<>();
 
-    private AddressSearch mAddressSearch;
+    private DistanceCalculation mAddressSearch;
 
     public CommuteListAdapter() {
-        mAddressSearch = new AddressSearch();
+        mAddressSearch = new DistanceCalculation();
     }
 
     @Override

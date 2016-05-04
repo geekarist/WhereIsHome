@@ -32,15 +32,9 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
 
 public class PickCommuteActivity extends AppCompatActivity {
     public static final String DATA_RESULT_COMMUTE = "RESULT_PLACE";
@@ -52,12 +46,12 @@ public class PickCommuteActivity extends AppCompatActivity {
     private static final String EXTRA_PICK_HOME_ADDRESS = "EXTRA_PICK_HOME_ADDRESS";
     private static final String EXTRA_HOME_ADDRESS = "EXTRA_HOME_ADDRESS";
 
-
     private String mHomeAddress;
     private boolean mPickHomeAddress;
-    private DistanceMatrixService mDistanceMatrixService;
     private Place mSelectedPlace;
     private Commute mCommuteToModify;
+
+    private DistanceCalculation mDistanceCalculation;
 
     @Bind(R.id.pick_commute_text_address_value)
     TextView mAddressText;
@@ -114,7 +108,7 @@ public class PickCommuteActivity extends AppCompatActivity {
                     .setMessage(msg.toString()).create().show();
         }
 
-        createDistanceMatrixService();
+        mDistanceCalculation = new DistanceCalculation();
     }
 
     private LatLngBounds getInitialBounds(Commute commute) {
@@ -136,25 +130,13 @@ public class PickCommuteActivity extends AppCompatActivity {
         return bounds;
     }
 
-    private void createDistanceMatrixService() {
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://maps.googleapis.com")
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        mDistanceMatrixService = retrofit.create(DistanceMatrixService.class);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent placeData) {
         if (requestCode == REQUEST_PLACE_PICKER) {
             if (resultCode == RESULT_OK) {
                 mSelectedPlace = PlacePicker.getPlace(this, placeData);
-                mAddressText.setText(placeLabel(mSelectedPlace));
+                mAddressText.setText(placeStr(mSelectedPlace.getAddress(), mSelectedPlace.getLatLng()));
             } else {
                 setResult(RESULT_CANCELED);
                 finish();
@@ -163,26 +145,35 @@ public class PickCommuteActivity extends AppCompatActivity {
     }
 
     public void createCommute(Consumer<Commute> callback) {
+        String selectedPlaceStr = placeStr(mSelectedPlace.getAddress(), mSelectedPlace.getLatLng());
         if (mPickHomeAddress) {
-            callback.accept(new Commute(placeLabel(mSelectedPlace), 0, getString(R.string.pick_commute_your_home_duration_text), 0));
+            callback.accept(new Commute(selectedPlaceStr, 0, getString(R.string.pick_commute_your_home_duration_text), 0));
         } else {
-            findDistance(mHomeAddress, mSelectedPlace, callback);
+            mDistanceCalculation
+                    .from(mHomeAddress)
+                    .to(selectedPlaceStr)
+                    .complete((durationText, durationSeconds) -> {
+                        Commute commute =
+                                new Commute(
+                                        selectedPlaceStr, durationSeconds, durationText,
+                                        Integer.parseInt(String.valueOf(mEditNumber.getText())));
+                        callback.accept(commute);
+                    });
         }
     }
 
-    private void findDistance(String fromAddress, final Place toPlace, Consumer<Commute> callback) {
+    private void findDistance2(String fromAddress, Consumer<Commute> callback, final String placeStr) {
         mDistanceMatrixService.getDistanceMatrix(
-                String.valueOf(fromAddress), String.valueOf(toPlace.getAddress()),
+                String.valueOf(fromAddress), placeStr,
                 "AIzaSyB1FGeq0g-kv2_pa7N9J-t601V9Nj9ibfw")
                 .enqueue(new Callback<DistanceMatrix>() {
                     @Override
                     public void onResponse(Call<DistanceMatrix> call, Response<DistanceMatrix> response) {
                         int durationSeconds = optionalOfDuration(response).map(d -> (int) Math.round(d.value)).orElse(0);
                         String durationText = optionalOfDuration(response).map(d -> d.text).orElse(getString(R.string.pick_commute_no_itinerary_found));
-                        String label = placeLabel(toPlace);
                         Commute commute =
                                 new Commute(
-                                        label, durationSeconds, durationText,
+                                        placeStr, durationSeconds, durationText,
                                         Integer.parseInt(String.valueOf(mEditNumber.getText())));
                         callback.accept(commute);
                     }
@@ -196,18 +187,8 @@ public class PickCommuteActivity extends AppCompatActivity {
                 });
     }
 
-    private Optional<DistanceMatrixElement> optionalOfDuration(Response<DistanceMatrix> response) {
-        return Optional.ofNullable(response)
-                .map(Response::body)
-                .map(b -> b.rows)
-                .filter(rows -> !rows.isEmpty())
-                .map(rows -> rows.get(0))
-                .map(r -> r.elements).map(elements -> elements.get(0))
-                .map(e -> e.duration);
-    }
-
-    private String placeLabel(Place place) {
-        return String.valueOf(place.getAddress() != null ? place.getAddress() : place.getLatLng());
+    private String placeStr(CharSequence placeAddress, LatLng placeLatLng) {
+        return String.valueOf(placeAddress != null ? placeAddress : String.format("%f,%f", placeLatLng.latitude, placeLatLng.longitude));
     }
 
     @OnClick(R.id.pick_commute_button_accept)
@@ -220,30 +201,5 @@ public class PickCommuteActivity extends AppCompatActivity {
             setResult(RESULT_OK, data);
             finish();
         });
-    }
-
-    interface DistanceMatrixService {
-        @GET("/maps/api/distancematrix/json?mode=transit")
-        Call<DistanceMatrix> getDistanceMatrix(@Query("origins") String origin, @Query("destinations") String destination, @Query("key") String key);
-    }
-
-    public static class DistanceMatrix {
-        List<String> destinationAddresses;
-        List<String> originAddresses;
-        List<DistanceMatrixRow> rows;
-    }
-
-    public static class DistanceMatrixRow {
-        List<DistanceMatrixElements> elements;
-    }
-
-    public static class DistanceMatrixElements {
-        DistanceMatrixElement distance;
-        DistanceMatrixElement duration;
-    }
-
-    public static class DistanceMatrixElement {
-        String text;
-        double value;
     }
 }
