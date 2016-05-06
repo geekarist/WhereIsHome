@@ -86,7 +86,7 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
     }
 
     public void updateCommutingTimes(String homeAddress) {
-        Stream.of(mCommuteList).forEach(commute ->
+        Stream.of(mCommuteList).skip(1).forEach(commute ->
                 mAddressSearch
                         .from(homeAddress)
                         .to(commute.mAddress)
