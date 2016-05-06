@@ -1,8 +1,5 @@
 package com.github.geekarist.whereishome;
 
-import android.util.Log;
-import android.widget.Toast;
-
 import com.annimon.stream.Optional;
 import com.annimon.stream.function.BiConsumer;
 
@@ -53,7 +50,7 @@ public class DistanceCalculation {
         mDistanceMatrixService = retrofit.create(DistanceMatrixService.class);
     }
 
-    public void complete(BiConsumer<String, Integer> callback) {
+    public void complete(BiConsumer<String, Integer> callback, BiConsumer<Throwable, String> errorCallback) {
         mDistanceMatrixService.getDistanceMatrix(
                 String.valueOf(mFrom), mTo,
                 "AIzaSyB1FGeq0g-kv2_pa7N9J-t601V9Nj9ibfw")
@@ -67,9 +64,7 @@ public class DistanceCalculation {
 
                     @Override
                     public void onFailure(Call<DistanceMatrix> call, Throwable t) {
-                        String msg = "Error during DistanceMatrix call";
-                        Toast.makeText(PickCommuteActivity.this, msg, Toast.LENGTH_LONG).show();
-                        Log.e(TAG, msg, t);
+                        errorCallback.accept(t, "Error during DistanceMatrix call");
                     }
                 });
     }

@@ -1,9 +1,12 @@
 package com.github.geekarist.whereishome;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
@@ -12,11 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> {
+    private static final String TAG = CommuteListAdapter.class.getSimpleName();
     private final List<Commute> mCommuteList = new ArrayList<>();
+    private final Context mContext;
 
     private DistanceCalculation mAddressSearch;
 
-    public CommuteListAdapter() {
+    public CommuteListAdapter(Context context) {
+        mContext = context;
         mAddressSearch = new DistanceCalculation();
     }
 
@@ -87,6 +93,10 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
                         .complete((durationText, durationSeconds) -> {
                             commute.setDurationText(durationText);
                             commute.setDurationSeconds(durationSeconds);
+                            notifyDataSetChanged();
+                        }, (error, msg) -> {
+                            Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+                            Log.e(TAG, msg, error);
                         }));
     }
 }

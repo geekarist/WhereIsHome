@@ -32,9 +32,6 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class PickCommuteActivity extends AppCompatActivity {
     public static final String DATA_RESULT_COMMUTE = "RESULT_PLACE";
@@ -158,33 +155,11 @@ public class PickCommuteActivity extends AppCompatActivity {
                                         selectedPlaceStr, durationSeconds, durationText,
                                         Integer.parseInt(String.valueOf(mEditNumber.getText())));
                         callback.accept(commute);
+                    }, (error, msg) -> {
+                        Toast.makeText(PickCommuteActivity.this, msg, Toast.LENGTH_LONG).show();
+                        Log.e(TAG, msg, error);
                     });
         }
-    }
-
-    private void findDistance2(String fromAddress, Consumer<Commute> callback, final String placeStr) {
-        mDistanceMatrixService.getDistanceMatrix(
-                String.valueOf(fromAddress), placeStr,
-                "AIzaSyB1FGeq0g-kv2_pa7N9J-t601V9Nj9ibfw")
-                .enqueue(new Callback<DistanceMatrix>() {
-                    @Override
-                    public void onResponse(Call<DistanceMatrix> call, Response<DistanceMatrix> response) {
-                        int durationSeconds = optionalOfDuration(response).map(d -> (int) Math.round(d.value)).orElse(0);
-                        String durationText = optionalOfDuration(response).map(d -> d.text).orElse(getString(R.string.pick_commute_no_itinerary_found));
-                        Commute commute =
-                                new Commute(
-                                        placeStr, durationSeconds, durationText,
-                                        Integer.parseInt(String.valueOf(mEditNumber.getText())));
-                        callback.accept(commute);
-                    }
-
-                    @Override
-                    public void onFailure(Call<DistanceMatrix> call, Throwable t) {
-                        String msg = "Error during DistanceMatrix call";
-                        Toast.makeText(PickCommuteActivity.this, msg, Toast.LENGTH_LONG).show();
-                        Log.e(TAG, msg, t);
-                    }
-                });
     }
 
     private String placeStr(CharSequence placeAddress, LatLng placeLatLng) {

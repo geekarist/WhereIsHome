@@ -46,7 +46,7 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mCommuteListView.setLayoutManager(layoutManager);
-        mAdapter = new CommuteListAdapter();
+        mAdapter = new CommuteListAdapter(this);
         mCommuteListView.setAdapter(mAdapter);
         mPersistence = new CommuteListPersistence(mAdapter, this, new Gson());
         mAdapter.registerAdapterDataObserver(mPersistence);
