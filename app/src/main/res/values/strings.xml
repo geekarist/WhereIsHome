@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">WhereIsHome</string>
+    <string name="google_app_id">1070453278580</string>
 
     <string name="commuting_time_add_place_label">Add a place</string>
     <string name="commuting_time_total_placeholder">Add some places and you\'ll see something here</string>

@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
-include "${projectDir}/../private/private.properties"
+//include "${projectDir}/../private/private.properties"
 
 android {
     compileSdkVersion 23

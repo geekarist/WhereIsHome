@@ -2,6 +2,7 @@ package com.github.geekarist.whereishome;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -104,6 +105,8 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
                         mAdapter.updateCommutingTimes(pickedCommute.mAddress);
                     }
                 }
+            } else {
+                new AlertDialog.Builder(this).setMessage("Error while picking place. Please try again.").create().show();
             }
         }
     }
