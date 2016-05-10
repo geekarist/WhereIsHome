@@ -1,7 +1,16 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
-//include "${projectDir}/../private/private.properties"
+def getProp(String propName) {
+    def propsFile = rootProject.file('private/private.properties')
+    if (propsFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        return '"' + props[propName] + '"'
+    } else {
+        return "";
+    }
+}
 
 android {
     compileSdkVersion 23
@@ -13,6 +22,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        buildConfigField('String', 'CITYMAPPER_API_KEY', getProp('citymapper.api.key'))
     }
     buildTypes {
         release {
