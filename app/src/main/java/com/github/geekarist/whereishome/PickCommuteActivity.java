@@ -105,7 +105,7 @@ public class PickCommuteActivity extends AppCompatActivity {
                     .setMessage(msg.toString()).create().show();
         }
 
-        mDistanceCalculation = new GoogleDistanceCalculation();
+        mDistanceCalculation = new CityMapperDistanceCalculation();
     }
 
     private LatLngBounds getInitialBounds(Commute commute) {
