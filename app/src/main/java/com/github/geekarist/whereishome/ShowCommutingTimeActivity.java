@@ -106,7 +106,10 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
                     }
                 }
             } else {
-                new AlertDialog.Builder(this).setMessage("Error while picking place. Please try again.").create().show();
+                new AlertDialog.Builder(this)
+                        .setMessage("Error while picking place. Please try again.")
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
+                        .create().show();
             }
         }
     }
