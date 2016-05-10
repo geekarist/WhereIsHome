@@ -32,8 +32,20 @@ public class GoogleDistanceCalculation implements DistanceCalculation {
     }
 
     @Override
+    public DistanceCalculation from(double latitude, double longitude) {
+        mFrom = String.format("%f,%f", latitude, longitude);
+        return this;
+    }
+
+    @Override
     public DistanceCalculation to(String address) {
         mTo = address;
+        return this;
+    }
+
+    @Override
+    public DistanceCalculation to(double latitude, double longitude) {
+        mTo = String.format("%f,%f", latitude, longitude);
         return this;
     }
 
