@@ -36,6 +36,7 @@ import butterknife.OnClick;
 public class PickCommuteActivity extends AppCompatActivity {
     public static final String DATA_RESULT_COMMUTE = "RESULT_PLACE";
     public static final String EXTRA_COMMUTE_TO_MODIFY = "EXTRA_COMMUTE";
+    public static final String EXTRA_ERROR_MSG = "EXTRA_ERROR_MSG";
 
     private static final int REQUEST_PLACE_PICKER = 1;
     private static final String TAG = PickCommuteActivity.class.getSimpleName();
@@ -135,7 +136,12 @@ public class PickCommuteActivity extends AppCompatActivity {
                 mSelectedPlace = PlacePicker.getPlace(this, placeData);
                 mAddressText.setText(placeStr(mSelectedPlace.getAddress(), mSelectedPlace.getLatLng()));
             } else {
-                setResult(RESULT_CANCELED);
+                Intent resultData = new Intent();
+                Optional.ofNullable(placeData)
+                        .map(data -> PlacePicker.getStatus(this, data))
+                        .map(String::valueOf)
+                        .ifPresent(statusStr -> resultData.putExtra(EXTRA_ERROR_MSG, statusStr));
+                setResult(RESULT_CANCELED, resultData);
                 finish();
             }
         }

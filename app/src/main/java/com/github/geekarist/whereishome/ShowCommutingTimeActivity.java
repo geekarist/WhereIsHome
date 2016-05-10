@@ -107,7 +107,9 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
                 }
             } else {
                 new AlertDialog.Builder(this)
-                        .setMessage("Error while picking place. Please try again.")
+                        .setMessage(getString(
+                                R.string.commuting_time_error_picking_place,
+                                data.getStringExtra(PickCommuteActivity.EXTRA_ERROR_MSG)))
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
                         .create().show();
             }
