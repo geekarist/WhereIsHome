@@ -1,12 +1,16 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
-def getProp(String propName) {
+def getProp(String propName, boolean quote) {
     def propsFile = rootProject.file('private/private.properties')
     if (propsFile.exists()) {
         def props = new Properties()
         props.load(new FileInputStream(propsFile))
-        return '"' + props[propName] + '"'
+        if (quote) {
+            return '"' + props[propName] + '"'
+        } else {
+            return props[propName]
+        }
     } else {
         return "";
     }
@@ -22,7 +26,11 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-        buildConfigField('String', 'CITYMAPPER_API_KEY', getProp('citymapper.api.key'))
+        buildConfigField('String', 'CITYMAPPER_API_KEY', getProp('citymapper.api.key', true))
+        manifestPlaceholders = [
+                PLACES_API_KEY    : getProp('places.api.key', false),
+                DIRECTIONS_API_KEY: getProp('directions.api.key', false)
+        ]
     }
     buildTypes {
         release {

@@ -10,10 +10,10 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCkJRsIwrApuXWXo0rC36AujYywTv3Kjxw" />
+            android:value="${PLACES_API_KEY}" />
         <meta-data
             android:name="DIRECTIONS_API_KEY"
-            android:value="AIzaSyCxmdjwtmgAZJ39qwdJ075DprUwYpNFcjg" />
+            android:value="${DIRECTIONS_API_KEY}" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
