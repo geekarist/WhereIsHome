@@ -66,10 +66,7 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
     }
 
     public String getHomeAddress() {
-        return Optional.of(this)
-                .map(CommuteListAdapter::getItems)
-                .filter(l -> !l.isEmpty())
-                .map(a -> a.get(0))
+        return optionalOfHome()
                 .map(c -> c.mAddress)
                 .orElse(null);
     }
@@ -98,6 +95,21 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
                             Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
                             Log.e(TAG, msg, error);
                         }));
+    }
+
+    public double getHomeLon() {
+        return optionalOfHome().map(Commute::getLon).orElse(0d);
+    }
+
+    public double getHomeLat() {
+        return optionalOfHome().map(Commute::getLat).orElse(0d);
+    }
+
+    private Optional<Commute> optionalOfHome() {
+        return Optional.of(this)
+                .map(CommuteListAdapter::getItems)
+                .filter(l -> !l.isEmpty())
+                .map(a -> a.get(0));
     }
 }
 

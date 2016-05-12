@@ -9,27 +9,35 @@ public class Commute implements Parcelable {
 
     private int mDurationSeconds;
     private String mDurationText;
+    private double mLon;
+    private double mLat;
 
-    public Commute(String address, int time, String durationText, int numberPerWeek) {
+    public Commute(String address, int time, String durationText, int numberPerWeek, double lat, double lon) {
         mAddress = address;
         mDurationSeconds = time;
         mDurationText = durationText;
         mNumberPerWeek = numberPerWeek;
+        mLon = lon;
+        mLat = lat;
     }
 
     protected Commute(Parcel in) {
         mAddress = in.readString();
+        mNumberPerWeek = in.readInt();
         mDurationSeconds = in.readInt();
         mDurationText = in.readString();
-        mNumberPerWeek = in.readInt();
+        mLon = in.readDouble();
+        mLat = in.readDouble();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mAddress);
-        dest.writeInt(getDurationSeconds());
-        dest.writeString(getDurationText());
         dest.writeInt(mNumberPerWeek);
+        dest.writeInt(mDurationSeconds);
+        dest.writeString(mDurationText);
+        dest.writeDouble(mLon);
+        dest.writeDouble(mLat);
     }
 
     @Override
@@ -88,5 +96,13 @@ public class Commute implements Parcelable {
 
     public void setDurationText(String durationText) {
         mDurationText = durationText;
+    }
+
+    public double getLon() {
+        return mLon;
+    }
+
+    public double getLat() {
+        return mLat;
     }
 }

@@ -42,9 +42,12 @@ public class PickCommuteActivity extends AppCompatActivity {
     private static final String TAG = PickCommuteActivity.class.getSimpleName();
 
     private static final String EXTRA_PICK_HOME_ADDRESS = "EXTRA_PICK_HOME_ADDRESS";
-    private static final String EXTRA_HOME_ADDRESS = "EXTRA_HOME_ADDRESS";
+    private static final String EXTRA_HOME_LAT = "EXTRA_HOME_LAT";
+    private static final String EXTRA_HOME_LON = "EXTRA_HOME_LON";
 
-    private String mHomeAddress;
+    private double mHomeLat;
+    private double mHomeLon;
+
     private boolean mPickHomeAddress;
     private Place mSelectedPlace;
     private Commute mCommuteToModify;
@@ -58,16 +61,19 @@ public class PickCommuteActivity extends AppCompatActivity {
     @Bind(R.id.pick_commute_text_number_per_week)
     TextView mEditNumberLabel;
 
-    public static Intent newCreationIntent(Context context, String homeAddress, boolean pickHomeAddress) {
+    public static Intent newCreationIntent(Context context, boolean pickHomeAddress,
+                                           double homeLat, double homeLon) {
         Intent intent = new Intent(context, PickCommuteActivity.class);
-        intent.putExtra(EXTRA_HOME_ADDRESS, homeAddress);
+        intent.putExtra(EXTRA_HOME_LAT, homeLat);
+        intent.putExtra(EXTRA_HOME_LON, homeLon);
         intent.putExtra(EXTRA_PICK_HOME_ADDRESS, pickHomeAddress);
         return intent;
     }
 
-    public static Intent newModificationIntent(Context context, String homeAddress,
-                                               boolean pickHomeAddress, Commute commuteToModify) {
-        Intent intent = newCreationIntent(context, homeAddress, pickHomeAddress);
+    public static Intent newModificationIntent(Context context, boolean pickHomeAddress,
+                                               Commute commuteToModify, double homeLat,
+                                               double homeLon) {
+        Intent intent = newCreationIntent(context, pickHomeAddress, homeLat, homeLon);
         intent.putExtra(EXTRA_COMMUTE_TO_MODIFY, commuteToModify);
         return intent;
     }
@@ -78,7 +84,8 @@ public class PickCommuteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pick_commute);
         ButterKnife.bind(this);
 
-        mHomeAddress = getIntent().getStringExtra(EXTRA_HOME_ADDRESS);
+        mHomeLat = getIntent().getDoubleExtra(EXTRA_HOME_LAT, 0);
+        mHomeLon = getIntent().getDoubleExtra(EXTRA_HOME_LON, 0);
         mPickHomeAddress = getIntent().getBooleanExtra(EXTRA_PICK_HOME_ADDRESS, false);
         mCommuteToModify = getIntent().getParcelableExtra(EXTRA_COMMUTE_TO_MODIFY);
 
@@ -134,7 +141,7 @@ public class PickCommuteActivity extends AppCompatActivity {
         if (requestCode == REQUEST_PLACE_PICKER) {
             if (resultCode == RESULT_OK) {
                 mSelectedPlace = PlacePicker.getPlace(this, placeData);
-                mAddressText.setText(placeStr(mSelectedPlace.getAddress(), mSelectedPlace.getLatLng()));
+                mAddressText.setText(placeLabel(mSelectedPlace.getAddress(), mSelectedPlace.getLatLng()));
             } else {
                 Intent resultData = new Intent();
                 Optional.ofNullable(placeData)
@@ -148,18 +155,22 @@ public class PickCommuteActivity extends AppCompatActivity {
     }
 
     public void createCommute(Consumer<Commute> callback) {
-        String selectedPlaceStr = placeStr(mSelectedPlace.getAddress(), mSelectedPlace.getLatLng());
+        String selectedPlaceStr = placeLabel(mSelectedPlace.getAddress(), mSelectedPlace.getLatLng());
         if (mPickHomeAddress) {
-            callback.accept(new Commute(selectedPlaceStr, 0, getString(R.string.pick_commute_your_home_duration_text), 0));
+            callback.accept(new Commute(
+                    selectedPlaceStr, 0, getString(R.string.pick_commute_your_home_duration_text), 0,
+                    mSelectedPlace.getLatLng().latitude, mSelectedPlace.getLatLng().longitude));
         } else {
             mDistanceCalculation
-                    .from(mHomeAddress)
-                    .to(selectedPlaceStr)
+                    .from(mHomeLat, mHomeLon)
+                    .to(mSelectedPlace.getLatLng().latitude, mSelectedPlace.getLatLng().longitude)
                     .complete((durationText, durationSeconds) -> {
                         Commute commute =
                                 new Commute(
                                         selectedPlaceStr, durationSeconds, durationText,
-                                        Integer.parseInt(String.valueOf(mEditNumber.getText())));
+                                        Integer.parseInt(String.valueOf(mEditNumber.getText())),
+                                        mSelectedPlace.getLatLng().latitude,
+                                        mSelectedPlace.getLatLng().longitude);
                         callback.accept(commute);
                     }, (error, msg) -> {
                         Toast.makeText(PickCommuteActivity.this, msg, Toast.LENGTH_LONG).show();
@@ -168,7 +179,7 @@ public class PickCommuteActivity extends AppCompatActivity {
         }
     }
 
-    private String placeStr(CharSequence placeAddress, LatLng placeLatLng) {
+    private String placeLabel(CharSequence placeAddress, LatLng placeLatLng) {
         return String.valueOf(placeAddress != null ? placeAddress : String.format("%f,%f", placeLatLng.latitude, placeLatLng.longitude));
     }
 

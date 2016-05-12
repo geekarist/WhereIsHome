@@ -10,6 +10,7 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.annimon.stream.Optional;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
 import com.google.gson.Gson;
@@ -71,8 +72,16 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
 
     @OnClick(R.id.commuting_time_button_add_place)
     public void onClickButtonAddPlace(View v) {
-        Intent intent = PickCommuteActivity.newCreationIntent(this, mAdapter.getHomeAddress(), isHomeAddressToPickForAdding());
+        Intent intent = PickCommuteActivity.newCreationIntent(this, isHomeAddressToPickForAdding(), getHomeLat(), getHomeLon());
         startActivityForResult(intent, REQUEST_PLACE);
+    }
+
+    private double getHomeLon() {
+        return Optional.of(mAdapter).map(CommuteListAdapter::getHomeLon).orElse(0d);
+    }
+
+    private double getHomeLat() {
+        return 0;
     }
 
     private boolean isHomeAddressToPickForAdding() {
@@ -83,7 +92,7 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
         String homeAddress = mAdapter.getHomeAddress();
         boolean pickHomeAddress = isHomeAddress(commute);
 
-        Intent intent = PickCommuteActivity.newModificationIntent(this, homeAddress, pickHomeAddress, commute);
+        Intent intent = PickCommuteActivity.newModificationIntent(this, pickHomeAddress, commute, getHomeLat(), getHomeLon());
         startActivityForResult(intent, REQUEST_PLACE);
     }
 
