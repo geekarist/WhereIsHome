@@ -93,7 +93,7 @@ public class CityMapperDistanceCalculation implements DistanceCalculation {
     }
 
     interface TravelTimeService {
-        @GET("/api/1/traveltime")
+        @GET("/api/1/traveltime/")
         Call<TravelTime> getTravelTime(@Query("startcoord") String startCoord, @Query("endcoord") String endCoord, @Query("key") String key);
     }
 
