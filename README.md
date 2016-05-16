@@ -10,7 +10,8 @@ Commute list:
 
 Add commute activity:
 
-* Preview commute time before accepting
+- Preview commute time before accepting
+- Use Citymapper API to calculate commuting time
 
 ## Planned features
 
@@ -30,4 +31,9 @@ Add commute activity:
 
 - Number of commutes per week empty by default
 - Select the time of commute
-* Use Citymapper API to calculate commuting time
+
+## Known issues
+
+- No spinner when waiting for distance calculation service response
+- Error popup when pressing Back on place picker
+- Tech. error when pressing Back on place pick confirmation screen
