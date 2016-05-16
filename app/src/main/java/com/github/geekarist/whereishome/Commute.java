@@ -65,20 +65,28 @@ public class Commute implements Parcelable {
 
         Commute commute = (Commute) o;
 
-        if (getDurationSeconds() != commute.getDurationSeconds()) return false;
         if (mNumberPerWeek != commute.mNumberPerWeek) return false;
+        if (mDurationSeconds != commute.mDurationSeconds) return false;
+        if (Double.compare(commute.mLon, mLon) != 0) return false;
+        if (Double.compare(commute.mLat, mLat) != 0) return false;
         if (mAddress != null ? !mAddress.equals(commute.mAddress) : commute.mAddress != null)
             return false;
-        return getDurationText() != null ? getDurationText().equals(commute.getDurationText()) : commute.getDurationText() == null;
+        return mDurationText != null ? mDurationText.equals(commute.mDurationText) : commute.mDurationText == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = mAddress != null ? mAddress.hashCode() : 0;
-        result = 31 * result + getDurationSeconds();
-        result = 31 * result + (getDurationText() != null ? getDurationText().hashCode() : 0);
+        int result;
+        long temp;
+        result = mAddress != null ? mAddress.hashCode() : 0;
         result = 31 * result + mNumberPerWeek;
+        result = 31 * result + mDurationSeconds;
+        result = 31 * result + (mDurationText != null ? mDurationText.hashCode() : 0);
+        temp = Double.doubleToLongBits(mLon);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(mLat);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
 
