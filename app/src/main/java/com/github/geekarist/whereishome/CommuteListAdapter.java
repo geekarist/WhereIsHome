@@ -111,5 +111,20 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
                 .filter(l -> !l.isEmpty())
                 .map(a -> a.get(0));
     }
+
+    public void updateCommutingTimes(double lat, double lon) {
+        Stream.of(mCommuteList).skip(1).forEach(commute ->
+                mAddressSearch
+                        .from(lat, lon)
+                        .to(commute.getLat(), commute.getLon())
+                        .complete((durationText, durationSeconds) -> {
+                            commute.setDurationText(durationText);
+                            commute.setDurationSeconds(durationSeconds);
+                            notifyDataSetChanged();
+                        }, (error, msg) -> {
+                            Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+                            Log.e(TAG, msg, error);
+                        }));
+    }
 }
 

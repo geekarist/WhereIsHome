@@ -81,7 +81,7 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
     }
 
     private double getHomeLat() {
-        return 0;
+        return Optional.of(mAdapter).map(CommuteListAdapter::getHomeLat).orElse(0d);
     }
 
     private boolean isHomeAddressToPickForAdding() {
@@ -111,7 +111,7 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
                 } else {
                     mAdapter.replaceItem(commuteToModify, pickedCommute);
                     if (isHomeAddress(pickedCommute)) {
-                        mAdapter.updateCommutingTimes(pickedCommute.mAddress);
+                        mAdapter.updateCommutingTimes(pickedCommute.getLat(), pickedCommute.getLon());
                     }
                 }
             } else {
