@@ -6,6 +6,8 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.Locale;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -33,7 +35,7 @@ public class CityMapperDistanceCalculation implements DistanceCalculation {
 
     @Override
     public DistanceCalculation from(double latitude, double longitude) {
-        mFrom = String.format("%f,%f", latitude, longitude);
+        mFrom = String.format(Locale.ENGLISH, "%f,%f", latitude, longitude);
         return this;
     }
 
@@ -44,7 +46,7 @@ public class CityMapperDistanceCalculation implements DistanceCalculation {
 
     @Override
     public DistanceCalculation to(double latitude, double longitude) {
-        mTo = String.format("%f,%f", latitude, longitude);
+        mTo = String.format(Locale.ENGLISH, "%f,%f", latitude, longitude);
         return this;
     }
 
