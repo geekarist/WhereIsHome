@@ -35,5 +35,3 @@ Add commute activity:
 ## Known issues
 
 - No spinner when waiting for distance calculation service response
-- Error popup when pressing Back on place picker
-- Tech. error when pressing Back on place pick confirmation screen

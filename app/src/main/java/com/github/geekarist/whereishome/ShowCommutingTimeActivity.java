@@ -115,12 +115,13 @@ public class ShowCommutingTimeActivity extends AppCompatActivity {
                     }
                 }
             } else {
-                new AlertDialog.Builder(this)
-                        .setMessage(getString(
-                                R.string.commuting_time_error_picking_place,
-                                data.getStringExtra(PickCommuteActivity.EXTRA_ERROR_MSG)))
-                        .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
-                        .create().show();
+                Optional.ofNullable(data)
+                        .map(d -> d.getStringExtra(PickCommuteActivity.EXTRA_ERROR_MSG))
+                        .ifPresent(errorMsg ->
+                                new AlertDialog.Builder(this)
+                                        .setMessage(getString(R.string.commuting_time_error_picking_place, errorMsg))
+                                        .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
+                                        .create().show());
             }
         }
     }
