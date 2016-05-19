@@ -30,7 +30,7 @@ Commute list:
 Add commute activity:
 
 - Number of commutes per week empty by default
-- Select the time of commute
+* Select the time of commute
 
 ## Known issues
 
