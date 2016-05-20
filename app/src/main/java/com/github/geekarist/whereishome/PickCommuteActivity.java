@@ -1,20 +1,18 @@
 package com.github.geekarist.whereishome;
 
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -32,7 +30,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Calendar;
+import java.sql.Time;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,7 +38,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PickCommuteActivity extends AppCompatActivity {
+public class PickCommuteActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     public static final String DATA_RESULT_COMMUTE = "RESULT_PLACE";
     public static final String EXTRA_COMMUTE_TO_MODIFY = "EXTRA_COMMUTE";
     public static final String EXTRA_ERROR_MSG = "EXTRA_ERROR_MSG";
@@ -58,6 +56,7 @@ public class PickCommuteActivity extends AppCompatActivity {
     private boolean mPickHomeAddress;
     private Place mSelectedPlace;
     private Commute mCommuteToModify;
+    private Time mTimeOfCommute;
 
     private DistanceCalculation mDistanceCalculation;
 
@@ -67,6 +66,8 @@ public class PickCommuteActivity extends AppCompatActivity {
     EditText mEditNumber;
     @Bind(R.id.pick_commute_text_number_per_week)
     TextView mEditNumberLabel;
+    @Bind(R.id.pick_commute_time_of_arrival)
+    Button mButtonTimeOfCommute;
 
     public static Intent newCreationIntent(Context context, boolean pickHomeAddress,
                                            double homeLat, double homeLon) {
@@ -123,32 +124,6 @@ public class PickCommuteActivity extends AppCompatActivity {
         mDistanceCalculation = new CityMapperDistanceCalculation();
     }
 
-    @OnClick(R.id.pick_commute_time_of_arrival)
-    public void showArrivalTimePicker() {
-        DialogFragment newFragment = new TimePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "timePicker");
-    }
-
-    public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
-
-            // Create a new instance of TimePickerDialog and return it
-            return new TimePickerDialog(getActivity(), this, hour, minute,
-                    DateFormat.is24HourFormat(getActivity()));
-        }
-
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            // Do something with the time chosen by the user
-        }
-    }
-
     private LatLngBounds getInitialBounds(Commute commute) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         LatLngBounds bounds;
@@ -168,6 +143,17 @@ public class PickCommuteActivity extends AppCompatActivity {
         return bounds;
     }
 
+    @OnClick(R.id.pick_commute_time_of_arrival)
+    public void showArrivalTimePicker() {
+        DialogFragment newFragment = TimePickerFragment.newInstance(this);
+        newFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        mTimeOfCommute = Time.valueOf(String.format("%02d:%02d:00", hourOfDay, minute));
+        mButtonTimeOfCommute.setText(String.format("%02d:%02d", hourOfDay, minute));
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent placeData) {
