@@ -26,9 +26,13 @@ public class TimePickerFragment extends DialogFragment {
                 DateFormat.is24HourFormat(getActivity()));
     }
 
-    public static DialogFragment newInstance(TimePickerDialog.OnTimeSetListener listener) {
+    public static DialogFragment newInstance(TimePickerDialog.OnTimeSetListener listener, int hour, int minute) {
         TimePickerFragment timePickerFragment = new TimePickerFragment();
         timePickerFragment.setListener(listener);
+        Bundle arguments = new Bundle();
+        arguments.putInt("ARG_HOUR", hour);
+        arguments.putInt("ARG_MINUTE", minute);
+        timePickerFragment.setArguments(arguments);
         return timePickerFragment;
     }
 

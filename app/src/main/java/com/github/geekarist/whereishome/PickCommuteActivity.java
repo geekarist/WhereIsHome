@@ -145,7 +145,7 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
 
     @OnClick(R.id.pick_commute_time_of_arrival)
     public void showArrivalTimePicker() {
-        DialogFragment newFragment = TimePickerFragment.newInstance(this);
+        DialogFragment newFragment = TimePickerFragment.newInstance(this, 9, 0);
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
