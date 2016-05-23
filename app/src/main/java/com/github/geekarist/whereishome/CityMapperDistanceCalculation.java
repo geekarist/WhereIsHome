@@ -64,7 +64,10 @@ public class CityMapperDistanceCalculation implements DistanceCalculation {
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
-        Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+        Gson gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
+                .create();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://developer.citymapper.com")

@@ -2,6 +2,8 @@ package com.github.geekarist.whereishome;
 
 import com.annimon.stream.Optional;
 import com.annimon.stream.function.BiConsumer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.sql.Time;
 import java.util.List;
@@ -60,10 +62,12 @@ public class GoogleDistanceCalculation implements DistanceCalculation {
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssX").create();
+        GsonConverterFactory factory = GsonConverterFactory.create(gson);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://maps.googleapis.com")
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(factory)
                 .build();
         mDistanceMatrixService = retrofit.create(DistanceMatrixService.class);
     }
