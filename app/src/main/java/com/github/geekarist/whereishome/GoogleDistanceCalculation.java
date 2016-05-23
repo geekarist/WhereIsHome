@@ -3,6 +3,7 @@ package com.github.geekarist.whereishome;
 import com.annimon.stream.Optional;
 import com.annimon.stream.function.BiConsumer;
 
+import java.sql.Time;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -41,6 +42,11 @@ public class GoogleDistanceCalculation implements DistanceCalculation {
     public DistanceCalculation to(String address) {
         mTo = address;
         return this;
+    }
+
+    @Override
+    public DistanceCalculation at(Time timeOfCommute) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

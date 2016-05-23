@@ -183,6 +183,7 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
             mDistanceCalculation
                     .from(mHomeLat, mHomeLon)
                     .to(mSelectedPlace.getLatLng().latitude, mSelectedPlace.getLatLng().longitude)
+                    .at(mTimeOfCommute)
                     .complete((durationText, durationSeconds) -> {
                         Commute commute =
                                 new Commute(

@@ -6,6 +6,8 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.sql.Time;
+import java.util.Date;
 import java.util.Locale;
 
 import okhttp3.OkHttpClient;
@@ -23,6 +25,7 @@ public class CityMapperDistanceCalculation implements DistanceCalculation {
     private String mFrom;
     private String mTo;
     private TravelTimeService mRetrofitService;
+    private Date mTimeOfCommute;
 
     public CityMapperDistanceCalculation() {
         createRetrofitService();
@@ -50,6 +53,12 @@ public class CityMapperDistanceCalculation implements DistanceCalculation {
         return this;
     }
 
+    @Override
+    public DistanceCalculation at(Time timeOfCommute) {
+        mTimeOfCommute = new Date();
+        return this;
+    }
+
     private void createRetrofitService() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -68,7 +77,7 @@ public class CityMapperDistanceCalculation implements DistanceCalculation {
     @Override
     public void complete(BiConsumer<String, Integer> callback, BiConsumer<Throwable, String> errorCallback) {
         mRetrofitService.getTravelTime(
-                mFrom, mTo,
+                mFrom, mTo, mTimeOfCommute,
                 BuildConfig.CITYMAPPER_API_KEY)
                 .enqueue(new Callback<TravelTime>() {
                     @Override
@@ -96,7 +105,7 @@ public class CityMapperDistanceCalculation implements DistanceCalculation {
 
     interface TravelTimeService {
         @GET("/api/1/traveltime/")
-        Call<TravelTime> getTravelTime(@Query("startcoord") String startCoord, @Query("endcoord") String endCoord, @Query("key") String key);
+        Call<TravelTime> getTravelTime(@Query("startcoord") String startCoord, @Query("endcoord") String endCoord, @Query("time") Date timeOfCommute, @Query("key") String key);
     }
 
     public static class TravelTime {
