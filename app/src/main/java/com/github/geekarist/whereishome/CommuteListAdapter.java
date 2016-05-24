@@ -23,7 +23,7 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
 
     public CommuteListAdapter(Context context) {
         mContext = context;
-        mAddressSearch = new CityMapperDistanceCalculation();
+        mAddressSearch = new CitymapperDistanceCalculation();
     }
 
     @Override

@@ -121,7 +121,7 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
                     .setMessage(msg.toString()).create().show();
         }
 
-        mDistanceCalculation = new CityMapperDistanceCalculation();
+        mDistanceCalculation = new CitymapperDistanceCalculation();
     }
 
     private LatLngBounds getInitialBounds(Commute commute) {
