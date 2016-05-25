@@ -20,14 +20,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public class CityMapperDistanceCalculation implements DistanceCalculation {
+public class CitymapperDistanceCalculation implements DistanceCalculation {
 
+    public static final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ssX";
     private String mFrom;
     private String mTo;
     private TravelTimeService mRetrofitService;
     private Date mTimeOfCommute;
 
-    public CityMapperDistanceCalculation() {
+    public CitymapperDistanceCalculation() {
         createRetrofitService();
     }
 
@@ -55,7 +56,7 @@ public class CityMapperDistanceCalculation implements DistanceCalculation {
 
     @Override
     public DistanceCalculation at(Time timeOfCommute) {
-        mTimeOfCommute = new Date();
+        mTimeOfCommute = new CitymapperDate(0);
         return this;
     }
 
@@ -66,7 +67,7 @@ public class CityMapperDistanceCalculation implements DistanceCalculation {
 
         Gson gson = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
+                .setDateFormat(DATE_PATTERN)
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -114,5 +115,4 @@ public class CityMapperDistanceCalculation implements DistanceCalculation {
     public static class TravelTime {
         int travelTimeMinutes;
     }
-
 }

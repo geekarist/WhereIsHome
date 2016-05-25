@@ -6,6 +6,10 @@ import java.util.Locale;
 
 class CitymapperDate extends Date {
 
+    public CitymapperDate(long time) {
+        super(time);
+    }
+
     @Override
     public String toString() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.US);
