@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Time;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -122,6 +123,20 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
         }
 
         mDistanceCalculation = new CitymapperDistanceCalculation();
+
+        initTimeOfCommute();
+    }
+
+    private void initTimeOfCommute() {
+        CharSequence text = mButtonTimeOfCommute.getText();
+        String timeOfCommuteValue = String.valueOf(text);
+        String[] splittedTimeOfCommuteValue = timeOfCommuteValue.split(":");
+        int hour = Integer.parseInt(splittedTimeOfCommuteValue[0]);
+        int minute = Integer.parseInt(splittedTimeOfCommuteValue[1]);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        mTimeOfCommute = new Time(calendar.getTime().getTime());
     }
 
     private LatLngBounds getInitialBounds(Commute commute) {

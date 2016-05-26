@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.sql.Time;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -55,7 +56,9 @@ public class CitymapperDistanceCalculation implements DistanceCalculation {
 
     @Override
     public DistanceCalculation at(Time timeOfCommute) {
-        mTimeOfCommute = new Date(0);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timeOfCommute.getTime());
+        mTimeOfCommute = calendar.getTime();
         return this;
     }
 
@@ -66,7 +69,6 @@ public class CitymapperDistanceCalculation implements DistanceCalculation {
 
         Gson gson = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
