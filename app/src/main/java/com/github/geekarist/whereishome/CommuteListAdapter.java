@@ -60,14 +60,14 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
 
     public Integer getTotalTime() {
         return Stream.of(getItems())
-                .map(commute -> commute.getDurationSeconds() * commute.mNumberPerWeek)
+                .map(commute -> commute.getDurationSeconds() * commute.getNumberPerWeek())
                 .reduce((duration1, duration2) -> duration1 + duration2)
                 .orElse(0);
     }
 
     public String getHomeAddress() {
         return optionalOfHome()
-                .map(c -> c.mAddress)
+                .map(Commute::getAddress)
                 .orElse(null);
     }
 
@@ -86,7 +86,7 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
         Stream.of(mCommuteList).skip(1).forEach(commute ->
                 mAddressSearch
                         .from(homeAddress)
-                        .to(commute.mAddress)
+                        .to(commute.getAddress())
                         .complete((durationText, durationSeconds) -> {
                             commute.setDurationText(durationText);
                             commute.setDurationSeconds(durationSeconds);

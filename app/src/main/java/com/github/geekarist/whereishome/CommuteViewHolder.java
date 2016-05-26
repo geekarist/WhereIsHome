@@ -36,18 +36,18 @@ public class CommuteViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Commute commute, boolean deletable) {
         mCommute = commute;
-        mTextAddress.setText(commute.mAddress);
+        mTextAddress.setText(commute.getAddress());
 
         mTextTime.setText(String.valueOf(commute.getDurationText()));
         mButtonRemove.setVisibility(deletable ? View.VISIBLE : View.GONE);
 
-        if (mCommute.mNumberPerWeek > 0) {
+        if (mCommute.getNumberPerWeek() > 0) {
             String numPerWeek = itemView.getContext().getString(
-                    R.string.view_place_text_number_per_week, commute.mNumberPerWeek);
+                    R.string.view_place_text_number_per_week, commute.getNumberPerWeek());
             mTextNumberPerWeek.setText(numPerWeek);
             mTextNumberPerWeek.setVisibility(View.VISIBLE);
 
-            int weeklyTimeSeconds = commute.mNumberPerWeek * commute.getDurationSeconds();
+            int weeklyTimeSeconds = commute.getNumberPerWeek() * commute.getDurationSeconds();
             int weeklyTimeId = R.string.place_total_weekly_time;
             String weeklyTimeValue = DateUtils.formatElapsedTime(weeklyTimeSeconds);
             String weeklyTimeStr = itemView.getContext().getString(weeklyTimeId, weeklyTimeValue);

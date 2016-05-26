@@ -32,6 +32,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Time;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -104,7 +105,10 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
         }
 
         Optional.ofNullable(mCommuteToModify)
-                .ifPresent(c -> mEditNumber.setText(String.valueOf(c.mNumberPerWeek)));
+                .ifPresent(c -> {
+                    mEditNumber.setText(String.valueOf(c.getNumberPerWeek()));
+                    mButtonTimeOfCommute.setText(toStrTime(c));
+                });
 
         try {
             final PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
@@ -127,6 +131,18 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
         initTimeOfCommute();
     }
 
+    private String toStrTime(Commute c) {
+        return Optional.ofNullable(c)
+                .map(Commute::getTimeOfCommute)
+                .map(Date::new)
+                .map(d -> {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(d);
+                    return String.format("%d:%d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                })
+                .orElse("09:02");
+    }
+
     private void initTimeOfCommute() {
         CharSequence text = mButtonTimeOfCommute.getText();
         String timeOfCommuteValue = String.valueOf(text);
@@ -143,7 +159,7 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         LatLngBounds bounds;
         try {
-            List<Address> addresses = geocoder.getFromLocationName(commute.mAddress, 1);
+            List<Address> addresses = geocoder.getFromLocationName(commute.getAddress(), 1);
             bounds = Optional.ofNullable(addresses)
                     .filter(l -> !l.isEmpty())
                     .map(l -> l.get(0))
@@ -188,6 +204,7 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
         }
     }
 
+    // FIXME: make private
     public void createCommute(Consumer<Commute> callback) {
         String selectedPlaceStr = placeLabel(mSelectedPlace.getAddress(), mSelectedPlace.getLatLng());
         if (mPickHomeAddress) {
@@ -205,7 +222,8 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
                                         selectedPlaceStr, durationSeconds, durationText,
                                         Integer.parseInt(String.valueOf(mEditNumber.getText())),
                                         mSelectedPlace.getLatLng().latitude,
-                                        mSelectedPlace.getLatLng().longitude);
+                                        mSelectedPlace.getLatLng().longitude,
+                                        mTimeOfCommute.getTime());
                         callback.accept(commute);
                     }, (error, msg) -> {
                         Toast.makeText(PickCommuteActivity.this, msg, Toast.LENGTH_LONG).show();
