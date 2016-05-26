@@ -22,7 +22,6 @@ import retrofit2.http.Query;
 
 public class CitymapperDistanceCalculation implements DistanceCalculation {
 
-    public static final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ssX";
     private String mFrom;
     private String mTo;
     private TravelTimeService mRetrofitService;
@@ -56,7 +55,7 @@ public class CitymapperDistanceCalculation implements DistanceCalculation {
 
     @Override
     public DistanceCalculation at(Time timeOfCommute) {
-        mTimeOfCommute = new CitymapperDate(0);
+        mTimeOfCommute = new Date(0);
         return this;
     }
 
@@ -67,13 +66,14 @@ public class CitymapperDistanceCalculation implements DistanceCalculation {
 
         Gson gson = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .setDateFormat(DATE_PATTERN)
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://developer.citymapper.com")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(new DateConverterFactory())
                 .build();
         mRetrofitService = retrofit.create(TravelTimeService.class);
     }
@@ -106,13 +106,14 @@ public class CitymapperDistanceCalculation implements DistanceCalculation {
         return Optional.ofNullable(response)
                 .map(Response::body);
     }
-
     interface TravelTimeService {
         @GET("/api/1/traveltime/")
         Call<TravelTime> getTravelTime(@Query("startcoord") String startCoord, @Query("endcoord") String endCoord, @Query("time") Date timeOfCommute, @Query("key") String key);
-    }
 
+    }
     public static class TravelTime {
         int travelTimeMinutes;
+
+
     }
 }
