@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,21 +83,6 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
         notifyDataSetChanged();
     }
 
-    public void updateCommutingTimes(String homeAddress) {
-        Stream.of(mCommuteList).skip(1).forEach(commute ->
-                mAddressSearch
-                        .from(homeAddress)
-                        .to(commute.getAddress())
-                        .complete((durationText, durationSeconds) -> {
-                            commute.setDurationText(durationText);
-                            commute.setDurationSeconds(durationSeconds);
-                            notifyDataSetChanged();
-                        }, (error, msg) -> {
-                            Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
-                            Log.e(TAG, msg, error);
-                        }));
-    }
-
     public double getHomeLon() {
         return optionalOfHome().map(Commute::getLon).orElse(0d);
     }
@@ -117,6 +103,7 @@ public class CommuteListAdapter extends RecyclerView.Adapter<CommuteViewHolder> 
                 mAddressSearch
                         .from(lat, lon)
                         .to(commute.getLat(), commute.getLon())
+                        .at(new Time(commute.getTimeOfCommute()))
                         .complete((durationText, durationSeconds) -> {
                             commute.setDurationText(durationText);
                             commute.setDurationSeconds(durationSeconds);

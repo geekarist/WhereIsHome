@@ -57,7 +57,7 @@ public class CitymapperDistanceCalculation implements DistanceCalculation {
     @Override
     public DistanceCalculation at(Time timeOfCommute) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(timeOfCommute.getTime());
+        calendar.setTimeInMillis(DateUtils.getStartOfToday() + timeOfCommute.getTime());
         mTimeOfCommute = calendar.getTime();
         return this;
     }
