@@ -14,6 +14,9 @@ class DateConverterFactory extends Converter.Factory {
     public Converter<Date, String> stringConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
         // Example date: 2016-05-27T19:39:02-0500
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US);
-        return format::format;
+        return (date) -> {
+            String formatted = format.format(date);
+            return formatted;
+        };
     }
 }

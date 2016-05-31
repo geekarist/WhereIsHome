@@ -1,5 +1,6 @@
 package com.github.geekarist.whereishome;
 
+import java.sql.Time;
 import java.util.Calendar;
 
 public class DateUtils {
@@ -10,5 +11,9 @@ public class DateUtils {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTimeInMillis();
+    }
+
+    static long getTodayAt(Time timeOfCommute) {
+        return getStartOfToday() + timeOfCommute.getTime();
     }
 }
