@@ -1,21 +1,17 @@
 package com.github.geekarist.whereishome;
 
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.annimon.stream.Optional;
@@ -30,9 +26,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Time;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,7 +33,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PickCommuteActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
+public class PickCommuteActivity extends AppCompatActivity {
     public static final String DATA_RESULT_COMMUTE = "RESULT_PLACE";
     public static final String EXTRA_COMMUTE_TO_MODIFY = "EXTRA_COMMUTE";
     public static final String EXTRA_ERROR_MSG = "EXTRA_ERROR_MSG";
@@ -58,7 +51,6 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
     private boolean mPickHomeAddress;
     private Place mSelectedPlace;
     private Commute mCommuteToModify;
-    private Time mTimeOfCommute;
 
     private DistanceCalculation mDistanceCalculation;
 
@@ -68,8 +60,6 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
     EditText mEditNumber;
     @Bind(R.id.pick_commute_text_number_per_week)
     TextView mEditNumberLabel;
-    @Bind(R.id.pick_commute_time_of_arrival)
-    Button mButtonTimeOfCommute;
 
     public static Intent newCreationIntent(Context context, boolean pickHomeAddress,
                                            double homeLat, double homeLon) {
@@ -105,10 +95,7 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
         }
 
         Optional.ofNullable(mCommuteToModify)
-                .ifPresent(c -> {
-                    mEditNumber.setText(String.valueOf(c.getNumberPerWeek()));
-                    mButtonTimeOfCommute.setText(toStrTime(c));
-                });
+                .ifPresent(c -> mEditNumber.setText(String.valueOf(c.getNumberPerWeek())));
 
         try {
             final PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
@@ -127,32 +114,6 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
         }
 
         mDistanceCalculation = new CitymapperDistanceCalculation();
-
-        initTimeOfCommute();
-    }
-
-    private String toStrTime(Commute c) {
-        return Optional.ofNullable(c)
-                .map(Commute::getTimeOfCommute)
-                .map(Date::new)
-                .map(d -> {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(d);
-                    return String.format("%d:%d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
-                })
-                .orElse("09:02");
-    }
-
-    private void initTimeOfCommute() {
-        CharSequence text = mButtonTimeOfCommute.getText();
-        String timeOfCommuteValue = String.valueOf(text);
-        String[] splittedTimeOfCommuteValue = timeOfCommuteValue.split(":");
-        int hour = Integer.parseInt(splittedTimeOfCommuteValue[0]);
-        int minute = Integer.parseInt(splittedTimeOfCommuteValue[1]);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        mTimeOfCommute = new Time(calendar.getTime().getTime());
     }
 
     private LatLngBounds getInitialBounds(Commute commute) {
@@ -172,18 +133,6 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
             return null;
         }
         return bounds;
-    }
-
-    @OnClick(R.id.pick_commute_time_of_arrival)
-    public void showArrivalTimePicker() {
-        DialogFragment newFragment = TimePickerFragment.newInstance(this, 9, 0);
-        newFragment.show(getSupportFragmentManager(), "timePicker");
-    }
-
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        mTimeOfCommute = Time.valueOf(String.format("%02d:%02d:00", hourOfDay, minute));
-        mButtonTimeOfCommute.setText(String.format("%02d:%02d", hourOfDay, minute));
     }
 
     @Override
@@ -215,15 +164,13 @@ public class PickCommuteActivity extends AppCompatActivity implements TimePicker
             mDistanceCalculation
                     .from(mHomeLat, mHomeLon)
                     .to(mSelectedPlace.getLatLng().latitude, mSelectedPlace.getLatLng().longitude)
-                    .at(mTimeOfCommute)
                     .complete((durationText, durationSeconds) -> {
                         Commute commute =
                                 new Commute(
                                         selectedPlaceStr, durationSeconds, durationText,
                                         Integer.parseInt(String.valueOf(mEditNumber.getText())),
                                         mSelectedPlace.getLatLng().latitude,
-                                        mSelectedPlace.getLatLng().longitude,
-                                        mTimeOfCommute.getTime());
+                                        mSelectedPlace.getLatLng().longitude);
                         callback.accept(commute);
                     }, (error, msg) -> {
                         Toast.makeText(PickCommuteActivity.this, msg, Toast.LENGTH_LONG).show();

@@ -55,28 +55,6 @@
         android:text="@string/pick_commute_edit_number_per_week_default_value"
         android:textAlignment="center"/>
 
-    <TextView
-        android:id="@+id/pick_commute_text_time_of_arrival"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/pick_commute_edit_number_per_week"
-        android:labelFor="@+id/pick_commute_time_of_arrival"
-        android:paddingBottom="@dimen/activity_subtitle_padding_bottom"
-        android:paddingTop="@dimen/activity_subtitle_padding_top"
-        android:text="@string/pick_commute_text_time_of_arrival"
-        android:textAlignment="center"
-        android:textSize="@dimen/activity_subtitle_size"/>
-
-    <Button
-        android:id="@id/pick_commute_time_of_arrival"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/pick_commute_text_time_of_arrival"
-        android:layout_centerHorizontal="true"
-        android:text="@string/pick_commute_time_of_arrival_default"
-        android:minWidth="50sp"
-        android:textAlignment="center"/>
-
     <Button
         android:id="@+id/pick_commute_button_accept"
         android:layout_width="match_parent"
