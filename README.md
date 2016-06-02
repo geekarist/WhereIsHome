@@ -29,9 +29,16 @@ Commute list:
 
 Add commute activity:
 
-- Number of commutes per week empty by default
-* Select the time of commute
+- Number of commutes
+    - Value empty by default
+    - Choose value per month
+- Place picker
+    - Lower zoom level when modifying a place
 
 ## Known issues
 
 - No spinner when waiting for distance calculation service response
+- "You're about to add a new commute" should be "This will be your new home" when changing home address
+- Margins are too small in the address in "You're about to add a new commute" screen
+- Delay when opening place picker in flight mode
+- "Error during CityMapper call" should be "Error during distance calculation"
