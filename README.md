@@ -42,3 +42,4 @@ Add commute activity:
 - Margins are too small in the address in "You're about to add a new commute" screen
 - Delay when opening place picker in flight mode
 - "Error during CityMapper call" should be "Error during distance calculation"
+* Missing automated functional test
