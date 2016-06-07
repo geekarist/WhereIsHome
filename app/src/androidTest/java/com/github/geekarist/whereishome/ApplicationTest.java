@@ -57,6 +57,7 @@ public class ApplicationTest {
             Stream.of(removeButtons).findFirst().ifPresent((button) -> {
                 button.click();
                 mDevice.wait(Until.findObject(By.text("OK")), FIND_OBJ_TIMEOUT).click();
+                mDevice.waitForWindowUpdate(null, 5_000);
             });
         }
 
