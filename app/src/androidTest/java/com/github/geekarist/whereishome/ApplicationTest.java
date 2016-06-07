@@ -14,12 +14,14 @@ import android.support.test.uiautomator.Until;
 import com.annimon.stream.Stream;
 
 import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class ApplicationTest {
@@ -36,7 +38,7 @@ public class ApplicationTest {
         mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         mDevice.pressHome();
         String name = getLauncherPackageName();
-        Assert.assertThat(name, Matchers.notNullValue());
+        assertThat(name, Matchers.notNullValue());
         mDevice.wait(Until.hasObject(By.pkg(name).depth(0)), LAUNCH_TIMEOUT);
 
         // Launch target activity
@@ -48,14 +50,17 @@ public class ApplicationTest {
     }
 
     @Test
-    public void shouldWork() {
+    public void shouldRemoveAllPlaces() {
 
-        List<UiObject2> removeButtons;
-        do {
-            removeButtons = mDevice.findObjects(By.res("com.github.geekarist.whereishome:id/place_remove"));
-            Stream.of(removeButtons).findFirst().ifPresent(UiObject2::click);
-            mDevice.wait(Until.findObject(By.text("OK")), FIND_OBJ_TIMEOUT).click();
-        } while (removeButtons.size() > 0);
+        while (mDevice.hasObject(By.res("com.github.geekarist.whereishome:id/place_remove"))) {
+            List<UiObject2> removeButtons = mDevice.findObjects(By.res("com.github.geekarist.whereishome:id/place_remove"));
+            Stream.of(removeButtons).findFirst().ifPresent((button) -> {
+                button.click();
+                mDevice.wait(Until.findObject(By.text("OK")), FIND_OBJ_TIMEOUT).click();
+            });
+        }
+
+        assertThat(mDevice.hasObject(By.res("com.github.geekarist.whereishome:id/place_remove")), is(false));
     }
 
     private String getLauncherPackageName() {
