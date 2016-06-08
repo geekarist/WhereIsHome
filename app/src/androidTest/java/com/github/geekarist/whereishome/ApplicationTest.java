@@ -32,7 +32,7 @@ public class ApplicationTest {
     private UiDevice mDevice;
 
     @Before
-    public void launchTargetActivity() {
+    public void setUp() {
 
         // Start launcher
         mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
@@ -47,11 +47,13 @@ public class ApplicationTest {
         launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(launchIntent);
         mDevice.wait(Until.hasObject(By.pkg(TARGET_PACKAGE).depth(0)), LAUNCH_TIMEOUT);
+
+        removeAllPlaces();
     }
 
-    @Test
-    public void shouldRemoveAllPlaces() {
+    private void removeAllPlaces() {
 
+        int iterationsLeft = 100;
         while (mDevice.hasObject(By.res("com.github.geekarist.whereishome:id/place_remove"))) {
             List<UiObject2> removeButtons = mDevice.findObjects(By.res("com.github.geekarist.whereishome:id/place_remove"));
             Stream.of(removeButtons).findFirst().ifPresent((button) -> {
@@ -59,9 +61,40 @@ public class ApplicationTest {
                 mDevice.wait(Until.findObject(By.text("OK")), FIND_OBJ_TIMEOUT).click();
                 mDevice.waitForWindowUpdate(null, 5_000);
             });
+            if (iterationsLeft-- < 0) {
+                break;
+            }
         }
 
         assertThat(mDevice.hasObject(By.res("com.github.geekarist.whereishome:id/place_remove")), is(false));
+    }
+
+    @Test
+    public void shouldShowWeeklyCommutes() {
+
+        // Given I am on the places screen
+        // And all places have been removed
+        // And internet is reachable
+
+        // When I pick a place
+
+        // Then the list of places has 1 item
+        // And it mentions the address I have picked
+        // Indicating 'this is your home'
+
+        // When I pick another place
+
+        // Then the list of places has 2 items
+        // And it mentions the new address
+        // Indicating an ETA, the number of times chosen and the total week time
+        // And the screen indicates the total week time
+
+        // When I pick another place
+
+        // Then the list of places has 3 items
+        // And it mentions the new address
+        // Indicating an ETA, the number of times chosen and the total week time
+        // And the screen indicates the total week time for all items
     }
 
     private String getLauncherPackageName() {
