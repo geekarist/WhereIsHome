@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
@@ -30,6 +32,7 @@ public class ApplicationTest {
     private static final String TARGET_PACKAGE = InstrumentationRegistry.getTargetContext().getPackageName();
     private static final long FIND_OBJ_TIMEOUT = 2_000;
     private UiDevice mDevice;
+    private Context mContext;
 
     @Before
     public void setUp() {
@@ -42,10 +45,10 @@ public class ApplicationTest {
         mDevice.wait(Until.hasObject(By.pkg(name).depth(0)), LAUNCH_TIMEOUT);
 
         // Launch target activity
-        Context context = InstrumentationRegistry.getContext();
-        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(TARGET_PACKAGE);
+        mContext = InstrumentationRegistry.getContext();
+        Intent launchIntent = mContext.getPackageManager().getLaunchIntentForPackage(TARGET_PACKAGE);
         launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        context.startActivity(launchIntent);
+        mContext.startActivity(launchIntent);
         mDevice.wait(Until.hasObject(By.pkg(TARGET_PACKAGE).depth(0)), LAUNCH_TIMEOUT);
 
         removeAllPlaces();
@@ -73,8 +76,11 @@ public class ApplicationTest {
     public void shouldShowWeeklyCommutes() {
 
         // Given I am on the places screen
+        assertThat(mDevice.hasObject(By.res("com.github.geekarist.whereishome:id/commuting_time_button_add_place")), is(true));
         // And all places have been removed
+        assertThat(mDevice.hasObject(By.res("com.github.geekarist.whereishome:id/place_container")), is(false));
         // And internet is reachable
+        assertThat(isNetworkConnected(), is(true));
 
         // When I pick a place
 
@@ -95,6 +101,12 @@ public class ApplicationTest {
         // And it mentions the new address
         // Indicating an ETA, the number of times chosen and the total week time
         // And the screen indicates the total week time for all items
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager systemService = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = systemService.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
     }
 
     private String getLauncherPackageName() {
