@@ -1,11 +1,13 @@
 package com.github.geekarist.whereishome;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
@@ -20,6 +22,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -33,6 +38,7 @@ public class ApplicationTest {
     private static final long FIND_OBJ_TIMEOUT = 2_000;
     private UiDevice mDevice;
     private Context mContext;
+    private ConnectivityManager mConnectivityManager;
 
     @Before
     public void setUp() {
@@ -50,6 +56,8 @@ public class ApplicationTest {
         launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         mContext.startActivity(launchIntent);
         mDevice.wait(Until.hasObject(By.pkg(TARGET_PACKAGE).depth(0)), LAUNCH_TIMEOUT);
+
+        mConnectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         removeAllPlaces();
     }
@@ -81,6 +89,7 @@ public class ApplicationTest {
         assertThat(mDevice.hasObject(By.res("com.github.geekarist.whereishome:id/place_container")), is(false));
         // And internet is reachable
         assertThat(isNetworkConnected(), is(true));
+        assertThat(isDistanceCalculationApiAccessible(), is(true));
 
         // When I pick a place
 
@@ -103,10 +112,21 @@ public class ApplicationTest {
         // And the screen indicates the total week time for all items
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private boolean isNetworkConnected() {
-        ConnectivityManager systemService = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = systemService.getActiveNetworkInfo();
+        NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
+    }
+
+    private boolean isDistanceCalculationApiAccessible() {
+        try {
+            URL url = new URL("https://developer.citymapper.com");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            return connection.getResponseCode() == 200;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private String getLauncherPackageName() {
