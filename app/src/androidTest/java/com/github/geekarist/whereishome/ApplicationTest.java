@@ -89,9 +89,21 @@ public class ApplicationTest {
         assertThat(mDevice.hasObject(By.res("com.github.geekarist.whereishome:id/place_container")), is(false));
         // And internet is reachable
         assertThat(isNetworkConnected(), is(true));
-        assertThat(isDistanceCalculationApiAccessible(), is(true));
 
         // When I pick a place
+        // Click com.github.geekarist.whereishome:id/commuting_time_button_add_place
+        mDevice.wait(Until.findObject(By.res("com.github.geekarist.whereishome:id/commuting_time_button_add_place")), FIND_OBJ_TIMEOUT).click();
+        // Click com.google.android.gms:id/places_ui_menu_main_search
+        mDevice.wait(Until.findObject(By.res("com.google.android.gms:id/places_ui_menu_main_search")), FIND_OBJ_TIMEOUT).click();
+        // Write "2 place carpeaux, puteaux"
+        mDevice.wait(Until.findObject(By.res("com.google.android.gms:id/input")), FIND_OBJ_TIMEOUT).setText("2 place carpeaux, puteaux");
+        // Click the first com.google.android.gms:id/place_autocomplete_prediction_primary_text in com.google.android.gms:id/list
+        List<UiObject2> suggestions = mDevice.wait(Until.findObjects(By.res("com.google.android.gms:id/place_autocomplete_prediction_primary_text")), FIND_OBJ_TIMEOUT);
+        suggestions.get(0).click();
+        // Click com.google.android.gms:id/title
+        mDevice.wait(Until.findObject(By.res("com.google.android.gms:id/title")), FIND_OBJ_TIMEOUT).click();
+        // Click com.github.geekarist.whereishome:id/pick_commute_button_accept
+        mDevice.wait(Until.findObject(By.res("com.github.geekarist.whereishome:id/pick_commute_button_accept")), FIND_OBJ_TIMEOUT).click();
 
         // Then the list of places has 1 item
         // And it mentions the address I have picked
@@ -118,6 +130,7 @@ public class ApplicationTest {
         return netInfo != null && netInfo.isConnected();
     }
 
+    // TODO make this work
     private boolean isDistanceCalculationApiAccessible() {
         try {
             URL url = new URL("https://developer.citymapper.com");
