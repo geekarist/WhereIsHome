@@ -78,57 +78,77 @@ public class ApplicationTest {
             }
         }
 
-        assertThat(mDevice.hasObject(By.res("com.github.geekarist.whereishome:id/place_remove")), is(false));
+        assertObjectAbsence("com.github.geekarist.whereishome:id/place_remove");
     }
 
     @Test
     public void shouldShowWeeklyCommutes() {
 
-        // Given I am on the places screen
-        assertThat(mDevice.hasObject(By.res("com.github.geekarist.whereishome:id/commuting_time_button_add_place")), is(true));
+        // GIVEN I am on the places screen
+        assertObjectPresence("com.github.geekarist.whereishome:id/commuting_time_button_add_place");
         // And all places have been removed
-        assertThat(mDevice.hasObject(By.res("com.github.geekarist.whereishome:id/place_container")), is(false));
+        assertObjectAbsence("com.github.geekarist.whereishome:id/place_container");
         // And internet is reachable
         assertThat(isNetworkConnected(), is(true));
 
-        // When I pick a place
+        // WHEN I pick a place
         // Click com.github.geekarist.whereishome:id/commuting_time_button_add_place
-        mDevice.wait(Until.findObject(By.res("com.github.geekarist.whereishome:id/commuting_time_button_add_place")), FIND_OBJ_TIMEOUT).click();
+        click("com.github.geekarist.whereishome:id/commuting_time_button_add_place");
         // Click com.google.android.gms:id/places_ui_menu_main_search
-        mDevice.wait(Until.findObject(By.res("com.google.android.gms:id/places_ui_menu_main_search")), FIND_OBJ_TIMEOUT).click();
+        click("com.google.android.gms:id/places_ui_menu_main_search");
         // Write "2 place carpeaux, puteaux"
-        mDevice.wait(Until.findObject(By.res("com.google.android.gms:id/input")), FIND_OBJ_TIMEOUT).setText("2 place carpeaux, puteaux");
+        setText("com.google.android.gms:id/input", "2 place carpeaux, puteaux");
         // Click the first com.google.android.gms:id/place_autocomplete_prediction_primary_text in com.google.android.gms:id/list
-        List<UiObject2> suggestions = mDevice.wait(Until.findObjects(By.res("com.google.android.gms:id/place_autocomplete_prediction_primary_text")), FIND_OBJ_TIMEOUT);
+        List<UiObject2> suggestions = findObjects("com.google.android.gms:id/place_autocomplete_prediction_primary_text");
         suggestions.get(0).click();
         // Click com.google.android.gms:id/title
-        mDevice.wait(Until.findObject(By.res("com.google.android.gms:id/title")), FIND_OBJ_TIMEOUT).click();
+        click("com.google.android.gms:id/title");
         // Click com.github.geekarist.whereishome:id/pick_commute_button_accept
-        mDevice.wait(Until.findObject(By.res("com.github.geekarist.whereishome:id/pick_commute_button_accept")), FIND_OBJ_TIMEOUT).click();
+        click("com.github.geekarist.whereishome:id/pick_commute_button_accept");
 
-        // Then the list of places has 1 item
-        List<UiObject2> foundAddresses = mDevice.wait(Until.findObjects(By.res("com.github.geekarist.whereishome:id/place_text_address")), FIND_OBJ_TIMEOUT);
+        // THEN the list of places has 1 item
+        List<UiObject2> foundAddresses = findObjects("com.github.geekarist.whereishome:id/place_text_address");
         assertThat(foundAddresses.size(), is(1));
         // And it mentions the address I have picked
         assertThat(foundAddresses.get(0).getText(), containsString("2 Place Carpeaux, 92800 Puteaux, France"));
-        List<UiObject2> foundTimes = mDevice.wait(Until.findObjects(By.res("com.github.geekarist.whereishome:id/place_text_commute_time")), FIND_OBJ_TIMEOUT);
+        List<UiObject2> foundTimes = findObjects("com.github.geekarist.whereishome:id/place_text_commute_time");
         // Indicating 'this is your home'
         assertThat(foundTimes.size(), is(1));
         assertThat(foundTimes.get(0).getText(), containsString("This is your home"));
 
-        // When I pick another place
+        // WHEN I pick another place
 
-        // Then the list of places has 2 items
+        // THEN the list of places has 2 items
         // And it mentions the new address
         // Indicating an ETA, the number of times chosen and the total week time
         // And the screen indicates the total week time
 
-        // When I pick another place
+        // WHEN I pick another place
 
-        // Then the list of places has 3 items
+        // THEN the list of places has 3 items
         // And it mentions the new address
         // Indicating an ETA, the number of times chosen and the total week time
         // And the screen indicates the total week time for all items
+    }
+
+    private void assertObjectAbsence(String resourceName) {
+        assertThat(mDevice.hasObject(By.res(resourceName)), is(false));
+    }
+
+    private void assertObjectPresence(String resourceName) {
+        assertThat(mDevice.hasObject(By.res(resourceName)), is(true));
+    }
+
+    private List<UiObject2> findObjects(String resourceName) {
+        return mDevice.wait(Until.findObjects(By.res(resourceName)), FIND_OBJ_TIMEOUT);
+    }
+
+    private void setText(String resourceName, String text) {
+        mDevice.wait(Until.findObject(By.res(resourceName)), FIND_OBJ_TIMEOUT).setText(text);
+    }
+
+    private void click(String resourceName) {
+        mDevice.wait(Until.findObject(By.res(resourceName)), FIND_OBJ_TIMEOUT).click();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
