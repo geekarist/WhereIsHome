@@ -17,7 +17,6 @@ import android.support.test.uiautomator.Until;
 
 import com.annimon.stream.Stream;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +26,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -47,7 +48,7 @@ public class ApplicationTest {
         mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         mDevice.pressHome();
         String name = getLauncherPackageName();
-        assertThat(name, Matchers.notNullValue());
+        assertThat(name, notNullValue());
         mDevice.wait(Until.hasObject(By.pkg(name).depth(0)), LAUNCH_TIMEOUT);
 
         // Launch target activity
@@ -106,8 +107,14 @@ public class ApplicationTest {
         mDevice.wait(Until.findObject(By.res("com.github.geekarist.whereishome:id/pick_commute_button_accept")), FIND_OBJ_TIMEOUT).click();
 
         // Then the list of places has 1 item
+        List<UiObject2> foundAddresses = mDevice.wait(Until.findObjects(By.res("com.github.geekarist.whereishome:id/place_text_address")), FIND_OBJ_TIMEOUT);
+        assertThat(foundAddresses.size(), is(1));
         // And it mentions the address I have picked
+        assertThat(foundAddresses.get(0).getText(), containsString("2 Place Carpeaux, 92800 Puteaux, France"));
+        List<UiObject2> foundTimes = mDevice.wait(Until.findObjects(By.res("com.github.geekarist.whereishome:id/place_text_commute_time")), FIND_OBJ_TIMEOUT);
         // Indicating 'this is your home'
+        assertThat(foundTimes.size(), is(1));
+        assertThat(foundTimes.get(0).getText(), containsString("This is your home"));
 
         // When I pick another place
 
