@@ -97,10 +97,10 @@ public class ApplicationTest {
         // Click com.google.android.gms:id/places_ui_menu_main_search
         click("com.google.android.gms:id/places_ui_menu_main_search");
         // Write "2 place carpeaux, puteaux"
-        setText("com.google.android.gms:id/input", "2 place carpeaux, puteaux");
+        setText("com.google.android.gms:id/input", "98 rue brillat savarin, paris");
         // Click the first com.google.android.gms:id/place_autocomplete_prediction_primary_text in com.google.android.gms:id/list
-        List<UiObject2> suggestions = findObjects("com.google.android.gms:id/place_autocomplete_prediction_primary_text");
-        suggestions.get(0).click();
+        List<UiObject2> suggestionsForHome = findObjects("com.google.android.gms:id/place_autocomplete_prediction_primary_text");
+        suggestionsForHome.get(0).click();
         // Click com.google.android.gms:id/title
         click("com.google.android.gms:id/title");
         // Click com.github.geekarist.whereishome:id/pick_commute_button_accept
@@ -110,13 +110,26 @@ public class ApplicationTest {
         List<UiObject2> foundAddresses = findObjects("com.github.geekarist.whereishome:id/place_text_address");
         assertThat(foundAddresses.size(), is(1));
         // And it mentions the address I have picked
-        assertThat(foundAddresses.get(0).getText(), containsString("2 Place Carpeaux, 92800 Puteaux, France"));
+        assertThat(foundAddresses.get(0).getText(), containsString("98 Rue Brillat-Savarin, 75013 Paris-13E-Arrondissement, France"));
         List<UiObject2> foundTimes = findObjects("com.github.geekarist.whereishome:id/place_text_commute_time");
         // Indicating 'this is your home'
         assertThat(foundTimes.size(), is(1));
         assertThat(foundTimes.get(0).getText(), containsString("This is your home"));
 
         // WHEN I pick another place
+        // Click com.github.geekarist.whereishome:id/commuting_time_button_add_place
+        click("com.github.geekarist.whereishome:id/commuting_time_button_add_place");
+        // Click com.google.android.gms:id/places_ui_menu_main_search
+        click("com.google.android.gms:id/places_ui_menu_main_search");
+        // Write "2 place carpeaux, puteaux"
+        setText("com.google.android.gms:id/input", "2 place carpeaux, puteaux");
+        // Click the first com.google.android.gms:id/place_autocomplete_prediction_primary_text in com.google.android.gms:id/list
+        List<UiObject2> suggestionsForWork = findObjects("com.google.android.gms:id/place_autocomplete_prediction_primary_text");
+        suggestionsForWork.get(0).click();
+        // Click com.google.android.gms:id/title
+        click("com.google.android.gms:id/title");
+        // Click com.github.geekarist.whereishome:id/pick_commute_button_accept
+        click("com.github.geekarist.whereishome:id/pick_commute_button_accept");
 
         // THEN the list of places has 2 items
         // And it mentions the new address
