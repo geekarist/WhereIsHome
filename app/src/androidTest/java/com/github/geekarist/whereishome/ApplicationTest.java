@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.UiDevice;
@@ -32,6 +33,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
+@LargeTest
 public class ApplicationTest {
 
     private static final long LAUNCH_TIMEOUT = 15_000;
@@ -92,19 +94,7 @@ public class ApplicationTest {
         assertThat(isNetworkConnected(), is(true));
 
         // WHEN I pick a place
-        // Click com.github.geekarist.whereishome:id/commuting_time_button_add_place
-        click("com.github.geekarist.whereishome:id/commuting_time_button_add_place");
-        // Click com.google.android.gms:id/places_ui_menu_main_search
-        click("com.google.android.gms:id/places_ui_menu_main_search");
-        // Write "2 place carpeaux, puteaux"
-        setText("com.google.android.gms:id/input", "98 rue brillat savarin, paris");
-        // Click the first com.google.android.gms:id/place_autocomplete_prediction_primary_text in com.google.android.gms:id/list
-        List<UiObject2> suggestionsForHome = findObjects("com.google.android.gms:id/place_autocomplete_prediction_primary_text");
-        suggestionsForHome.get(0).click();
-        // Click com.google.android.gms:id/title
-        click("com.google.android.gms:id/title");
-        // Click com.github.geekarist.whereishome:id/pick_commute_button_accept
-        click("com.github.geekarist.whereishome:id/pick_commute_button_accept");
+        pickPlace("98 rue brillat savarin, paris");
 
         // THEN the list of places has 1 item
         List<UiObject2> foundAddresses = findObjects("com.github.geekarist.whereishome:id/place_text_address");
@@ -118,30 +108,47 @@ public class ApplicationTest {
 
         // WHEN I pick another place
         // Click com.github.geekarist.whereishome:id/commuting_time_button_add_place
-        click("com.github.geekarist.whereishome:id/commuting_time_button_add_place");
-        // Click com.google.android.gms:id/places_ui_menu_main_search
-        click("com.google.android.gms:id/places_ui_menu_main_search");
-        // Write "2 place carpeaux, puteaux"
-        setText("com.google.android.gms:id/input", "2 place carpeaux, puteaux");
-        // Click the first com.google.android.gms:id/place_autocomplete_prediction_primary_text in com.google.android.gms:id/list
-        List<UiObject2> suggestionsForWork = findObjects("com.google.android.gms:id/place_autocomplete_prediction_primary_text");
-        suggestionsForWork.get(0).click();
-        // Click com.google.android.gms:id/title
-        click("com.google.android.gms:id/title");
-        // Click com.github.geekarist.whereishome:id/pick_commute_button_accept
-        click("com.github.geekarist.whereishome:id/pick_commute_button_accept");
+        pickPlace("2 place carpeaux, puteaux");
 
         // THEN the list of places has 2 items
         // And it mentions the new address
         // Indicating an ETA, the number of times chosen and the total week time
         // And the screen indicates the total week time
+        foundAddresses = findObjects("com.github.geekarist.whereishome:id/place_text_address");
+        assertThat(foundAddresses.size(), is(2));
+        // And it mentions the address I have picked
+        assertThat(foundAddresses.get(1).getText(), containsString("2 Place Carpeaux, 92800 Puteaux, France"));
+        foundTimes = findObjects("com.github.geekarist.whereishome:id/place_text_commute_time");
+        // Indicating 'this is your home'
+        assertThat(foundTimes.size(), is(2));
+        assertThat("'" + foundTimes.get(1).getText() + "' should match /\\d+ minutes/", foundTimes.get(1).getText().matches("\\d+ minutes"), is(true));
 
         // WHEN I pick another place
+        pickPlace("Antrebloc");
 
         // THEN the list of places has 3 items
+        foundAddresses = findObjects("com.github.geekarist.whereishome:id/place_text_address");
+        assertThat(foundAddresses.size(), is(3));
         // And it mentions the new address
+        assertThat(foundAddresses.get(1).getText(), containsString("5 rue Henri Barbusse, XXXXX Villejuif, France"));
         // Indicating an ETA, the number of times chosen and the total week time
         // And the screen indicates the total week time for all items
+    }
+
+    private void pickPlace(String placeToPick) {
+        // Click com.github.geekarist.whereishome:id/commuting_time_button_add_place
+        click("com.github.geekarist.whereishome:id/commuting_time_button_add_place");
+        // Click com.google.android.gms:id/places_ui_menu_main_search
+        click("com.google.android.gms:id/places_ui_menu_main_search");
+        // Write "2 place carpeaux, puteaux"
+        setText("com.google.android.gms:id/input", placeToPick);
+        // Click the first com.google.android.gms:id/place_autocomplete_prediction_primary_text in com.google.android.gms:id/list
+        List<UiObject2> suggestionsForHome = findObjects("com.google.android.gms:id/place_autocomplete_prediction_primary_text");
+        suggestionsForHome.get(0).click();
+        // Click com.google.android.gms:id/title
+        click("com.google.android.gms:id/title");
+        // Click com.github.geekarist.whereishome:id/pick_commute_button_accept
+        click("com.github.geekarist.whereishome:id/pick_commute_button_accept");
     }
 
     private void assertObjectAbsence(String resourceName) {
