@@ -130,7 +130,7 @@ public class ApplicationTest {
         foundAddresses = findObjects("com.github.geekarist.whereishome:id/place_text_address");
         assertThat(foundAddresses.size(), is(3));
         // And it mentions the new address
-        assertThat(foundAddresses.get(1).getText(), containsString("5 rue Henri Barbusse, XXXXX Villejuif, France"));
+        assertThat(foundAddresses.get(2).getText(), containsString("5 rue Henri Barbusse, XXXXX Villejuif, France"));
         // Indicating an ETA, the number of times chosen and the total week time
         // And the screen indicates the total week time for all items
     }
