@@ -101,8 +101,8 @@ public class ApplicationTest {
         assertThat(foundAddresses.size(), is(1));
         // And it mentions the address I have picked
         assertThat(foundAddresses.get(0).getText(), containsString("98 Rue Brillat-Savarin, 75013 Paris-13E-Arrondissement, France"));
-        List<UiObject2> foundTimes = findObjects("com.github.geekarist.whereishome:id/place_text_commute_time");
         // Indicating 'this is your home'
+        List<UiObject2> foundTimes = findObjects("com.github.geekarist.whereishome:id/place_text_commute_time");
         assertThat(foundTimes.size(), is(1));
         assertThat(foundTimes.get(0).getText(), containsString("This is your home"));
 
@@ -111,17 +111,15 @@ public class ApplicationTest {
         pickPlace("2 place carpeaux, puteaux");
 
         // THEN the list of places has 2 items
-        // And it mentions the new address
-        // Indicating an ETA, the number of times chosen and the total week time
-        // And the screen indicates the total week time
         foundAddresses = findObjects("com.github.geekarist.whereishome:id/place_text_address");
         assertThat(foundAddresses.size(), is(2));
         // And it mentions the address I have picked
         assertThat(foundAddresses.get(1).getText(), containsString("2 Place Carpeaux, 92800 Puteaux, France"));
+        // Indicating an ETA
         foundTimes = findObjects("com.github.geekarist.whereishome:id/place_text_commute_time");
-        // Indicating 'this is your home'
         assertThat(foundTimes.size(), is(2));
         assertThat("'" + foundTimes.get(1).getText() + "' should match /\\d+ minutes/", foundTimes.get(1).getText().matches("\\d+ minutes"), is(true));
+        // TODO: And the screen indicates the total week time
 
         // WHEN I pick another place
         pickPlace("Antrebloc");
@@ -130,9 +128,13 @@ public class ApplicationTest {
         foundAddresses = findObjects("com.github.geekarist.whereishome:id/place_text_address");
         assertThat(foundAddresses.size(), is(3));
         // And it mentions the new address
-        assertThat(foundAddresses.get(2).getText(), containsString("5 rue Henri Barbusse, XXXXX Villejuif, France"));
-        // Indicating an ETA, the number of times chosen and the total week time
-        // And the screen indicates the total week time for all items
+        assertThat(foundAddresses.get(2).getText(), containsString("5 Rue Henri Barbusse, 94800 Villejuif, France"));
+        // Indicating an ETA
+        foundTimes = findObjects("com.github.geekarist.whereishome:id/place_text_commute_time");
+        assertThat(foundTimes.size(), is(3));
+        assertThat("'" + foundTimes.get(2).getText() + "' should match /\\d+ minutes/", foundTimes.get(1).getText().matches("\\d+ minutes"), is(true));
+        // TODO: The number of times chosen and the total week time
+        // TODO: And the screen indicates the total week time
     }
 
     private void pickPlace(String placeToPick) {
