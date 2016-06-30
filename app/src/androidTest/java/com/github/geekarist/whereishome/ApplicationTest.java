@@ -119,7 +119,6 @@ public class ApplicationTest {
         foundTimes = findObjects("com.github.geekarist.whereishome:id/place_text_commute_time");
         assertThat(foundTimes.size(), is(2));
         assertThat("'" + foundTimes.get(1).getText() + "' should match /\\d+ minutes/", foundTimes.get(1).getText().matches("\\d+ minutes"), is(true));
-        // TODO: And the screen indicates the total week time
 
         // WHEN I pick another place
         pickPlace("Antrebloc");
@@ -132,9 +131,10 @@ public class ApplicationTest {
         // Indicating an ETA
         foundTimes = findObjects("com.github.geekarist.whereishome:id/place_text_commute_time");
         assertThat(foundTimes.size(), is(3));
-        assertThat("'" + foundTimes.get(2).getText() + "' should match /\\d+ minutes/", foundTimes.get(1).getText().matches("\\d+ minutes"), is(true));
-        // TODO: The number of times chosen and the total week time
+        assertThat("'" + foundTimes.get(2).getText() + "' should match /\\d+ minutes/", foundTimes.get(2).getText().matches("\\d+ minutes"), is(true));
+
         // TODO: And the screen indicates the total week time
+        UiObject2 totalWeekTime = mDevice.wait(Until.findObject(By.res("com.github.geekarist.whereishome:id/commuting_time_text_commuting_time")), FIND_OBJ_TIMEOUT);
     }
 
     private void pickPlace(String placeToPick) {
