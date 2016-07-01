@@ -132,10 +132,13 @@ public class ApplicationTest {
         foundTimes = findObjects("com.github.geekarist.whereishome:id/place_text_commute_time");
         assertThat(foundTimes.size(), is(3));
         assertTextMatch(foundTimes.get(2).getText(), "\\d+ minutes");
-
-        // TODO: And the screen indicates the total week time
-        UiObject2 totalWeekTime = mDevice.wait(Until.findObject(By.res("com.github.geekarist.whereishome:id/commuting_time_text_commuting_time")), FIND_OBJ_TIMEOUT);
+        // And the screen indicates the total week time
+        UiObject2 totalWeekTime = findObject("com.github.geekarist.whereishome:id/commuting_time_text_commuting_time");
         assertTextMatch(totalWeekTime.getText(), ".*\\d+:\\d+:\\d+.*");
+    }
+
+    private UiObject2 findObject(String resourceName) {
+        return mDevice.wait(Until.findObject(By.res(resourceName)), FIND_OBJ_TIMEOUT);
     }
 
     private void assertTextMatch(String text, String regex) {
@@ -171,11 +174,11 @@ public class ApplicationTest {
     }
 
     private void setText(String resourceName, String text) {
-        mDevice.wait(Until.findObject(By.res(resourceName)), FIND_OBJ_TIMEOUT).setText(text);
+        findObject(resourceName).setText(text);
     }
 
     private void click(String resourceName) {
-        mDevice.wait(Until.findObject(By.res(resourceName)), FIND_OBJ_TIMEOUT).click();
+        findObject(resourceName).click();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
