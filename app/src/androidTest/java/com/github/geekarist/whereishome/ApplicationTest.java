@@ -36,9 +36,9 @@ import static org.junit.Assert.assertThat;
 @LargeTest
 public class ApplicationTest {
 
-    private static final long LAUNCH_TIMEOUT = 15_000;
+    private static final long LAUNCH_TIMEOUT = 20_000;
     private static final String TARGET_PACKAGE = InstrumentationRegistry.getTargetContext().getPackageName();
-    private static final long FIND_OBJ_TIMEOUT = 2_000;
+    private static final long FIND_OBJ_TIMEOUT = 10_000;
     private UiDevice mDevice;
     private Context mContext;
     private ConnectivityManager mConnectivityManager;
