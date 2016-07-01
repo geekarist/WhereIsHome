@@ -118,7 +118,7 @@ public class ApplicationTest {
         // Indicating an ETA
         foundTimes = findObjects("com.github.geekarist.whereishome:id/place_text_commute_time");
         assertThat(foundTimes.size(), is(2));
-        assertThat("'" + foundTimes.get(1).getText() + "' should match /\\d+ minutes/", foundTimes.get(1).getText().matches("\\d+ minutes"), is(true));
+        assertTextMatch(foundTimes.get(1).getText(), "\\d+ minutes");
 
         // WHEN I pick another place
         pickPlace("Antrebloc");
