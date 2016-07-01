@@ -131,10 +131,15 @@ public class ApplicationTest {
         // Indicating an ETA
         foundTimes = findObjects("com.github.geekarist.whereishome:id/place_text_commute_time");
         assertThat(foundTimes.size(), is(3));
-        assertThat("'" + foundTimes.get(2).getText() + "' should match /\\d+ minutes/", foundTimes.get(2).getText().matches("\\d+ minutes"), is(true));
+        assertTextMatch(foundTimes.get(2).getText(), "\\d+ minutes");
 
         // TODO: And the screen indicates the total week time
         UiObject2 totalWeekTime = mDevice.wait(Until.findObject(By.res("com.github.geekarist.whereishome:id/commuting_time_text_commuting_time")), FIND_OBJ_TIMEOUT);
+        assertTextMatch(totalWeekTime.getText(), ".*\\d+:\\d+:\\d+.*");
+    }
+
+    private void assertTextMatch(String text, String regex) {
+        assertThat("\"" + text + "\" should match /" + regex + "/", text.matches(regex), is(true));
     }
 
     private void pickPlace(String placeToPick) {
